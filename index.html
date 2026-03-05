@@ -9,6 +9,7 @@
     <style>
         :root {
             --bg: #03080a; --bg-bright: #fdfbf7; 
+            --bg-night: #010305;
             --gold: #c5a059; --gold-light: #e5c986;
             --white: #ffffff;
             --sun-ray: rgba(255, 255, 255, 0.04);
@@ -18,13 +19,13 @@
         body { background-color: var(--bg); color: var(--white); font-family: 'Montserrat', sans-serif; transition: background-color 1.5s ease; min-height: 100vh; overflow: hidden; }
         body.allow-scroll { overflow-y: auto; overflow-x: hidden; }
 
-        /* --- Landing Page: Deep Sea --- */
+        /* --- Landing Page --- */
         #page-landing { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; width: 100%; padding: 20px; }
         .sunbeams { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% -20%, #1a2a30 0%, #03080a 80%); }
         .ray { position: absolute; top: -50%; left: 50%; width: 300%; height: 200%; background: repeating-linear-gradient(95deg, transparent 0%, transparent 5%, var(--sun-ray) 7%, transparent 10%, transparent 12%, var(--sun-ray) 15%); transform-origin: center top; animation: raysRotate 25s infinite linear; filter: blur(20px); }
         @keyframes raysRotate { 0% { transform: translateX(-50%) rotate(0deg); } 100% { transform: translateX(-50%) rotate(15deg); } }
 
-        .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 10vw, 6.5rem); font-style: italic; margin-bottom: 20px; color: var(--white); transform: none; }
+        .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 10vw, 6.5rem); font-style: italic; margin-bottom: 20px; color: var(--white); }
         .countdown { display: flex; gap: clamp(10px, 3vw, 25px); margin-bottom: clamp(30px, 8vh, 60px); }
         .count-item span:first-child { font-size: clamp(2rem, 7vw, 4rem); color: var(--gold-light); display: block; font-family: 'Cormorant Garamond', serif; font-weight: 600; }
         .count-item span:last-child { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); }
@@ -37,66 +38,60 @@
         #game-ui h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 8vw, 3.5rem); color: var(--gold); font-style: italic; }
 
         /* --- Celebration Page --- */
-        #page-celebration { display: none; opacity: 0; width: 100%; background: var(--bg-bright); color: #333; transition: opacity 1.5s; }
+        #page-celebration { display: none; opacity: 0; width: 100%; background: var(--bg-bright); color: #333; transition: opacity 1.5s; padding-bottom: 100px; }
         .scroll-hint { font-size: 0.9rem; letter-spacing: 6px; color: var(--gold); text-transform: uppercase; padding: 100px 0 40px; text-align: center; }
 
         .heart-container { position: relative; width: 100%; max-width: 1100px; height: 90vh; min-height: 700px; margin: 0 auto; display: flex; justify-content: center; align-items: center; z-index: 20; }
-        
-        .center-birthday-text {
-            position: absolute;
-            font-family: 'Dancing Script', cursive;
-            color: var(--gold);
-            text-align: center;
-            z-index: 50;
-            opacity: 1;
-            pointer-events: none;
-            text-shadow: 2px 2px 15px rgba(255, 255, 255, 0.6), 0 0 5px rgba(197, 160, 89, 0.5);
-            line-height: 1.2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .center-birthday-text .hd-title {
-            font-size: clamp(2rem, 6vw, 4rem);
-            font-weight: 600;
-        }
-        .center-birthday-text .name-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(2.5rem, 8vw, 5rem);
-            font-weight: 700;
-            letter-spacing: 2px;
-            margin-top: -5px;
-            text-transform: none; font-style: normal;
-        }
+        .center-birthday-text { position: absolute; font-family: 'Dancing Script', cursive; color: var(--gold); text-align: center; z-index: 50; pointer-events: none; text-shadow: 2px 2px 15px rgba(255, 255, 255, 0.6); }
+        .center-birthday-text .hd-title { font-size: clamp(2rem, 6vw, 4rem); font-weight: 600; }
+        .center-birthday-text .name-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 700; }
 
         .polaroid { position: absolute; background: white; padding: 5px 5px 18px 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); width: clamp(70px, 12vw, 90px); transition: 0.4s; z-index: 20; }
         .polaroid img { width: 100%; height: clamp(60px, 10vw, 85px); object-fit: cover; }
         .polaroid:hover { transform: scale(2.5) rotate(0deg) !important; z-index: 1000; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
 
-        .message-box { background: white; border-radius: 40px; padding: 60px 40px; max-width: 700px; margin: 80px auto 120px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.03); border: 1px solid #f2f2f2; z-index: 30; position: relative; }
-        .personal-note { font-family: 'Dancing Script', cursive; line-height: 1.8; font-size: 1.5rem; color: #444; text-align: left; margin-top: 50px; white-space: pre-line; }
-
-        /* --- Balloons HD --- */
-        #balloon-container { position: fixed; inset: 0; pointer-events: none; z-index: 9000; }
-        .balloon-wrapper { position: absolute; pointer-events: auto; cursor: pointer; display: flex; flex-direction: column; align-items: center; z-index: 9999; }
+        .message-box { background: white; border-radius: 40px; padding: 60px 40px; max-width: 700px; margin: 80px auto 30px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.03); border: 1px solid #f2f2f2; position: relative; z-index: 30; }
         
-        .balloon { 
-            width: 70px; height: 90px; 
-            border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%; 
-            position: relative;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 20%),
-                        linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(0,0,0,0.1) 100%);
-            box-shadow: inset 0 -10px 15px rgba(0,0,0,0.15),
-                        inset 0 10px 15px rgba(255,255,255,0.4),
-                        0 5px 15px rgba(0,0,0,0.1);
-        }
-        .balloon::after {
-            content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
-            border-left: 7px solid transparent; border-right: 7px solid transparent; border-top: 10px solid; opacity: 0.8;
-        }
+        .personal-note { font-family: 'Dancing Script', cursive; line-height: 1.8; font-size: 1.5rem; color: #444; text-align: left; margin-top: 50px; min-height: 200px; }
+        #typewriter-display { white-space: pre-line; display: inline; }
+        #typewriter-cursor { display: inline-block; width: 2px; height: 1.2em; background-color: var(--gold); margin-left: 2px; animation: blink 1s infinite; vertical-align: middle; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-        .string-svg { width: 30px; height: 80px; margin-top: -3px; }
+        /* --- Night Scene --- */
+        #page-surprise { display: none; position: fixed; inset: 0; z-index: 10000; background: var(--bg-night); opacity: 0; transition: opacity 1.5s ease; flex-direction: column; justify-content: center; align-items: center; text-align: center; overflow: hidden; }
+        .night-sky { position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle at 10% 20%, #1a2a30 0%, #010305 60%); }
+        .moon { position: absolute; top: 10%; right: 15%; width: 60px; height: 60px; background: #fff; border-radius: 50%; box-shadow: 0 0 30px rgba(255,255,255,0.3); }
+        
+        #wish-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 8vw, 4rem); font-style: italic; color: var(--gold); opacity: 0; transition: 2s; margin-bottom: 30px; }
+        
+        /* HD Shooting Star */
+        .shooting-star { position: absolute; top: -10%; left: 110%; width: 4px; height: 4px; background: #fff; border-radius: 50%; opacity: 0; box-shadow: 0 0 20px #fff, 0 0 40px var(--gold-light); z-index: 5; }
+        .shooting-star::after { content: ''; position: absolute; top: 50%; transform: translateY(-50%); width: 250px; height: 2px; background: linear-gradient(90deg, #fff, transparent); left: 0; }
+
+        /* Scroller */
+        #friends-wishes-scene { display: none; position: absolute; inset: 0; z-index: 100; flex-direction: column; align-items: center; padding-top: 100px; color: #fff; }
+        #wishes-scroller { position: relative; width: 80%; max-width: 600px; text-align: center; }
+        .wish-item { margin-bottom: 60px; }
+        .wish-item h3 { color: var(--gold); font-family: 'Cormorant Garamond'; font-size: 1.8rem; margin-bottom: 10px; }
+        .wish-item p { color: #aaa; font-weight: 300; line-height: 1.6; }
+
+        @keyframes shootingStarAnim { 0% { transform: translate(0,0) rotate(-45deg); opacity: 0; } 10% { opacity: 1; } 40% { transform: translate(-1200px, 1200px) rotate(-45deg); opacity: 0; } 100% { opacity: 0; } }
+        @keyframes scrollUp { 0% { transform: translateY(100vh); } 100% { transform: translateY(-130%); } }
+
+        /* HD Balloon Design */
+        #balloon-container { position: fixed; inset: 0; pointer-events: none; z-index: 9000; }
+        .balloon-wrapper { position: absolute; pointer-events: auto; cursor: pointer; display: flex; flex-direction: column; align-items: center; z-index: 9500; }
+        .balloon { 
+            width: 75px; height: 95px; border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%; position: relative;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 30%), 
+                        radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.1) 100%);
+            box-shadow: inset -5px -10px 15px rgba(0,0,0,0.2), 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .balloon::after { 
+            content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); 
+            border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 12px solid; border-top-color: inherit; 
+        }
+        .string-svg { width: 30px; height: 80px; margin-top: -3px; opacity: 0.6; }
     </style>
 </head>
 <body>
@@ -135,57 +130,72 @@
             </div>
         </div>
 
-        <div class="message-box">
+        <div class="message-box" id="trigger-box">
             <p style="font-family: 'Cormorant Garamond'; font-style: italic; font-size: 1.8rem; font-weight: 600;">"Maybe I’m not the best boyfriend, but you are truly the best girlfriend."</p>
             <p style="color: var(--gold); margin: 20px 0; font-family: 'Noto Sans SC'; letter-spacing: 2px;">“也许我不是最好的男朋友，但你绝对是最好的女朋友。”</p>
-            <p class="personal-note">
-                Halooo Lemon, sekarang kamu udah umur 20 lohh, gak berasa yaa waktu udah bawa kamu ke umur yang sekarang, dan mungkin kamu gak nyangka juga bisa ketemu aku di tengah-tengah perjalanan kamu. 
+            
+            <div class="personal-note">
+                <span id="typewriter-display"></span><span id="typewriter-cursor"></span>
+            </div>
 
-                Happyy birthdayy yaaa My Deer Lemonn, mungkin aku bukan pacar yang terbaik, tapii kamuu yangg merupakan pacar terbaik buatt aku. Aku berdoa untuk kesehatan kamu, perlindungan buat kamu, berkat melimpah, umur yang panjang, dan masa depan yang Indah buat kamu Leyonn.
+            <button id="final-wish-btn" class="next-btn" style="display: none; margin-top: 50px;" onclick="goToNightScene()">See Final Wish</button>
+        </div>
+    </div>
 
-                Maaff jugaa yaa kalau aku engga bisa kasih kamu hadiah yangg mungkin kamu inginkan. Tapi aku harap kamu suka hadiah yangg akan aku kasih ke kamu Lemonn.
-
-                Sekali lagii happyy birthhdayyy yaaa Lemonnn, My Deer Lemonnn. I Lovee Youu Leonita Kumala Dewi, our love will be forever.
-            </p>
+    <div id="page-surprise">
+        <div class="night-sky"><div class="moon"></div><canvas id="stars-night"></canvas></div>
+        <div class="shooting-star" id="ss-1"></div>
+        <h2 id="wish-title">Make A Wish</h2>
+        <button id="done-btn" class="next-btn" style="display: none; opacity: 0; transition: 0.5s; z-index: 20000;" onclick="startWishesScroller()">Done</button>
+        
+        <div id="friends-wishes-scene">
+            <h1 style="font-family: 'Cormorant Garamond'; font-size: clamp(2rem, 6vw, 3rem); color: var(--gold); margin-bottom: 50px; font-style: italic;">Happy Birthday My Love</h1>
+            <div id="wishes-scroller">
+                <div class="wish-item"><h3>Teman 1</h3><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
+                <div class="wish-item"><h3>Teman 2</h3><p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p></div>
+                <div class="wish-item"><h3>Teman 3</h3><p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p></div>
+                <div class="wish-item"><h3>Teman 4</h3><p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p></div>
+                <div class="wish-item"><h3>Teman 5</h3><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.</p></div>
+            </div>
         </div>
     </div>
 
     <div id="balloon-container"></div>
 
     <script>
-        const photos = ['https://i.postimg.cc/Q9t6F51F/image.jpg', 'https://i.postimg.cc/YG9XvgYL/image.jpg', 'https://i.postimg.cc/sQXnMS77/image.jpg', 'https://i.postimg.cc/mzDdPMC7/image.jpg', 'https://i.postimg.cc/G82M4YGJ/image.jpg', 'https://i.postimg.cc/gXJMxR8H/image.jpg', 'https://i.postimg.cc/5Y0PXvLm/image.jpg', 'https://i.postimg.cc/JDnTsJZq/image.jpg', 'https://i.postimg.cc/TyTNXBPc/image.jpg', 'https://i.postimg.cc/XZxHNxZm/image.jpg', 'https://i.postimg.cc/qtQbBQtD/image.jpg', 'https://i.postimg.cc/QBS4NSBP/image.jpg', 'https://i.postimg.cc/SXVTQVXv/image.jpg', 'https://i.postimg.cc/KKQqcQkS/image.jpg', 'https://i.postimg.cc/67zj6z2X/image.jpg', 'https://i.postimg.cc/4KwL4w7R/image.jpg', 'https://i.postimg.cc/2qTcjTbm/image.jpg', 'https://i.postimg.cc/QBS4NS9x/image.jpg', 'https://i.postimg.cc/KkH0BzDM/image.jpg', 'https://i.postimg.cc/3y9Sr94r/image.jpg', 'https://i.postimg.cc/8FwKkwJC/image.jpg', 'https://i.postimg.cc/JyK67KD0/image.jpg', 'https://i.postimg.cc/LYXyJfL2/image.jpg', 'https://i.postimg.cc/S2sZn8Cm/image.jpg', 'https://i.postimg.cc/WF39drgt/image.jpg', 'https://i.postimg.cc/47d8YtVK/image.jpg', 'https://i.postimg.cc/R6DgKFL7/image.jpg', 'https://i.postimg.cc/dkx5r1jT/image.jpg', 'https://i.postimg.cc/7GWK06ng/image.jpg', 'https://i.postimg.cc/KkH0BzDN/image.jpg', 'https://i.postimg.cc/dkx5r1j9/image.jpg', 'https://i.postimg.cc/BLVmH6Bp/image.jpg', 'https://i.postimg.cc/Hch6Xx93/image.jpg'];
+        // FOTO UPDATED
+        const photos = ['https://i.postimg.cc/Q9t6F51F/image.jpg', 'https://i.postimg.cc/YG9XvgYL/image.jpg', 'https://i.postimg.cc/sQXnMS77/image.jpg', 'https://i.postimg.cc/mzDdPMC7/image.jpg', 'https://i.postimg.cc/G82M4YGJ/image.jpg', 'https://i.postimg.cc/gXJMxR8H/image.jpg', 'https://i.postimg.cc/0rmDqsWQ/image.jpg', 'https://i.postimg.cc/5jvLMV7t/image.jpg', 'https://i.postimg.cc/TyTNXBPc/image.jpg', 'https://i.postimg.cc/XZxHNxZm/image.jpg', 'https://i.postimg.cc/qtQbBQtD/image.jpg', 'https://i.postimg.cc/QBS4NSBP/image.jpg', 'https://i.postimg.cc/SXVTQVXv/image.jpg', 'https://i.postimg.cc/KKQqcQkS/image.jpg', 'https://i.postimg.cc/67zj6z2X/image.jpg', 'https://i.postimg.cc/4KwL4w7R/image.jpg', 'https://i.postimg.cc/2qTcjTbm/image.jpg', 'https://i.postimg.cc/QBS4NS9x/image.jpg', 'https://i.postimg.cc/KkH0BzDM/image.jpg', 'https://i.postimg.cc/3y9Sr94r/image.jpg', 'https://i.postimg.cc/8FwKkwJC/image.jpg', 'https://i.postimg.cc/JyK67KD0/image.jpg', 'https://i.postimg.cc/LYXyJfL2/image.jpg', 'https://i.postimg.cc/S2sZn8Cm/image.jpg', 'https://i.postimg.cc/WF39drgt/image.jpg', 'https://i.postimg.cc/47d8YtVK/image.jpg', 'https://i.postimg.cc/R6DgKFL7/image.jpg', 'https://i.postimg.cc/dkx5r1jT/image.jpg', 'https://i.postimg.cc/7GWK06ng/image.jpg', 'https://i.postimg.cc/KkH0BzDN/image.jpg', 'https://i.postimg.cc/23vhfDcm/image.jpg', 'https://i.postimg.cc/BLVmH6Bp/image.jpg', 'https://i.postimg.cc/Hch6Xx93/image.jpg'];
+        
+        const fullText = `Halooo Lemon, sekarang kamu udah umur 20 lohh, gak berasa yaa waktu udah bawa kamu ke umur yang sekarang, dan mungkin kamu gak nyangka juga bisa ketemu aku di tengah-tengah perjalanan kamu. 
+
+Happyy birthdayy yaaa My Deer Lemonn, mungkin aku bukan pacar yang terbaik, tapii kamuu yangg merupakan pacar terbaik buatt aku. Aku berdoa untuk kesehatan kamu, perlindungan buat kamu, berkat melimpah, umur yang panjang, dan masa depan yang Indah buat kamu Leyonn.
+
+Maaff jugaa yaa kalau aku engga bisa kasih kamu hadiah yangg mungkin kamu inginkan. Tapi aku harap kamu suka hadiah yangg akan aku kasih ke kamu Lemonn.
+
+Sekali lagii happyy birthhdayyy yaaa Lemonnn, My Deer Lemonnn. I Lovee Youu Leonita Kumala Dewi, our love will be forever.`;
 
         let popped = 0;
         let gameActive = false;
-        let gameInterval;
         const colors = ['#FF5E5E', '#FFD700', '#FF7ED4', '#70FF8B', '#70D1FF', '#FF9F43'];
 
-        // FEATURE: Password Check logic
         function checkPassword() {
             const pass = prompt("Input your password:");
-            if (pass === "HBDLEON") {
-                startGame();
-            } else if (pass !== null) {
-                alert("Wrong password! Try again.");
-            }
+            if (pass === "HBDLEON") startGame();
+            else if (pass !== null) alert("Wrong password!");
         }
 
         function startGame() {
-            document.getElementById('page-landing').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('page-landing').style.display = 'none';
-                document.getElementById('game-session').style.display = 'flex';
-                document.body.style.backgroundColor = 'var(--bg-bright)';
-                gameActive = true;
-                spawnBalloonLoop();
-            }, 800);
+            document.getElementById('page-landing').style.display = 'none';
+            document.getElementById('game-session').style.display = 'flex';
+            document.body.style.backgroundColor = 'var(--bg-bright)';
+            gameActive = true;
+            spawnLoop();
         }
 
-        function spawnBalloonLoop() {
+        function spawnLoop() {
             if(!gameActive) return;
             createBalloon('game');
-            let nextSpawn = Math.max(100, 600 - (popped * 30)); 
-            gameInterval = setTimeout(spawnBalloonLoop, nextSpawn);
+            setTimeout(spawnLoop, Math.max(150, 600 - (popped * 25)));
         }
 
         function createBalloon(type) {
@@ -193,20 +203,19 @@
             const wrap = document.createElement('div');
             wrap.className = 'balloon-wrapper';
             const color = colors[Math.floor(Math.random()*colors.length)];
-            wrap.style.left = (10 + Math.random() * 80) + 'vw';
-            wrap.style.bottom = '-150px';
+            wrap.style.left = (Math.random() * 80 + 10) + 'vw';
+            wrap.style.bottom = '-120px';
+            wrap.style.color = color;
+            wrap.innerHTML = `<div class="balloon" style="background:${color};"></div><svg class="string-svg" viewBox="0 0 40 100"><path d="M20,0 Q35,25 20,50 T20,100" stroke="rgba(0,0,0,0.15)" fill="none" stroke-width="2"/></svg>`;
             
-            wrap.innerHTML = `
-                <div class="balloon" style="background:${color}; --b-color:${color}"></div>
-                <svg class="string-svg" viewBox="0 0 40 100"><path d="M20,0 Q35,25 20,50 T20,100" stroke="rgba(0,0,0,0.15)" stroke-width="2" fill="none" /></svg>`;
-            
-            wrap.querySelector('.balloon').style.setProperty('--b-color', color);
-            const triangleStyle = document.createElement('style');
-            triangleStyle.innerHTML = `.balloon-wrapper[style*="left"] .balloon::after { border-top-color: ${color} !important; }`;
-            document.head.appendChild(triangleStyle);
-
             wrap.onclick = (e) => {
-                confetti({ origin: { x: e.clientX/window.innerWidth, y: e.clientY/window.innerHeight }, colors: [color, '#fff'], particleCount: 35, zIndex: 10000 });
+                confetti({ 
+                    origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight }, 
+                    colors: [color, '#ffffff'], 
+                    particleCount: 40, 
+                    spread: 60,
+                    zIndex: 10000 
+                });
                 wrap.remove();
                 if(type === 'game' && gameActive) {
                     popped++;
@@ -214,37 +223,24 @@
                     if(popped >= 20) triggerFinale();
                 }
             };
-            
-            const dur = type === 'game' ? (2.8 - (popped * 0.1)) : (6 + Math.random()*3);
-            wrap.animate([{ bottom: '-150px' }, { bottom: '120vh' }], { duration: Math.max(1200, dur * 1000), easing: 'linear' }).onfinish = () => wrap.remove();
+            const dur = type === 'game' ? 3000 : 8000;
+            wrap.animate([{ bottom: '-120px' }, { bottom: '120vh' }], { duration: dur, easing: 'linear' }).onfinish = () => wrap.remove();
             container.appendChild(wrap);
         }
 
         function triggerFinale() {
             gameActive = false;
-            clearTimeout(gameInterval);
-            let count = 0;
-            const interval = setInterval(() => {
-                confetti({ particleCount: 150, spread: 80, origin: { x: Math.random(), y: 0.5 }, zIndex: 10001 });
-                count++;
-                if(count >= 6) {
-                    clearInterval(interval);
-                    setTimeout(endGame, 1000);
-                }
-            }, 350);
-        }
-
-        function endGame() {
-            const gameSess = document.getElementById('game-session');
-            gameSess.style.transition = "opacity 1.5s";
-            gameSess.style.opacity = "0";
+            confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 }, zIndex: 10001 });
             setTimeout(() => {
-                gameSess.style.display = 'none';
-                document.body.classList.add('allow-scroll');
-                const celeb = document.getElementById('page-celebration');
-                celeb.style.display = 'block';
-                setTimeout(() => { celeb.style.opacity = '1'; initHeart(); startContinuousConfetti(); }, 50);
-                setInterval(() => createBalloon('bg'), 2500);
+                document.getElementById('game-session').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('game-session').style.display = 'none';
+                    document.body.classList.add('allow-scroll');
+                    const celeb = document.getElementById('page-celebration');
+                    celeb.style.display = 'block';
+                    setTimeout(() => { celeb.style.opacity = '1'; initHeart(); startObservers(); }, 50);
+                    setInterval(() => createBalloon('bg'), 2500);
+                }, 1000);
             }, 1500);
         }
 
@@ -252,39 +248,98 @@
             const container = document.getElementById('heart-gallery');
             photos.forEach((src, i) => {
                 const t = (i / photos.length) * (2 * Math.PI);
-                const scaleFactor = clamp(15, window.innerWidth/50, 22);
-                const x = 16 * Math.pow(Math.sin(t), 3) * scaleFactor;
-                const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * scaleFactor;
+                const sf = Math.min(window.innerWidth/50, 20);
+                const x = 16 * Math.pow(Math.sin(t), 3) * sf;
+                const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * sf;
                 const card = document.createElement('div');
                 card.className = 'polaroid';
                 card.style.left = `calc(50% + ${x}px - 45px)`;
                 card.style.top = `calc(50% + ${y}px - 45px)`;
-                card.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
-                card.innerHTML = `<img src="${src}" loading="lazy">`;
+                card.style.transform = `rotate(${Math.random()*20-10}deg)`;
+                card.innerHTML = `<img src="${src}">`;
                 container.appendChild(card);
             });
         }
-        function clamp(min, val, max) { return Math.max(min, Math.min(val, max)); }
 
-        function startContinuousConfetti() {
-            const duration = 15 * 1000;
-            const animationEnd = Date.now() + duration;
-            const defaults = { startVelocity: 10, spread: 360, ticks: 100, zIndex: 50 };
-            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-            const interval = setInterval(function() {
-              const particleCount = 2;
-              confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 }, colors: colors, gravity: 0.5, scalar: 0.8 }));
-            }, 600);
+        function startObservers() {
+            let started = false;
+            const obs = new IntersectionObserver((entries) => {
+                if(entries[0].isIntersecting && !started) {
+                    started = true;
+                    typeWriter(0);
+                }
+            }, { threshold: 0.5 });
+            obs.observe(document.getElementById('trigger-box'));
+        }
+
+        function typeWriter(i) {
+            if (i < fullText.length) {
+                document.getElementById('typewriter-display').textContent += fullText.charAt(i);
+                setTimeout(() => typeWriter(i + 1), 25);
+            } else {
+                document.getElementById('typewriter-cursor').style.display = 'none';
+                document.getElementById('final-wish-btn').style.display = 'inline-block';
+            }
+        }
+
+        function goToNightScene() {
+            window.scrollTo(0,0);
+            document.body.classList.remove('allow-scroll');
+            const p = document.getElementById('page-surprise');
+            p.style.display = 'flex';
+            initNightStars();
+            setTimeout(() => { 
+                p.style.opacity = '1'; 
+                setTimeout(() => {
+                    document.getElementById('wish-title').style.opacity = '1';
+                    setTimeout(triggerShootingStar, 2000);
+                }, 1000);
+            }, 100);
+        }
+
+        function initNightStars() {
+            const canvas = document.getElementById('stars-night');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            let stars = Array(120).fill().map(() => ({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, o: Math.random(), s: Math.random()*0.02 }));
+            function draw() {
+                ctx.clearRect(0,0,canvas.width, canvas.height);
+                stars.forEach(s => {
+                    ctx.fillStyle = `rgba(255,255,255,${s.o})`;
+                    ctx.beginPath(); ctx.arc(s.x, s.y, 1.2, 0, Math.PI*2); ctx.fill();
+                    s.o += s.s; if(s.o > 1 || s.o < 0) s.s = -s.s;
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        function triggerShootingStar() {
+            const ss = document.getElementById('ss-1');
+            ss.style.animation = 'shootingStarAnim 3.5s ease-in forwards';
+            setTimeout(() => {
+                const btn = document.getElementById('done-btn');
+                btn.style.display = 'inline-block';
+                setTimeout(() => btn.style.opacity = '1', 50);
+            }, 3000);
+        }
+
+        function startWishesScroller() {
+            document.getElementById('wish-title').style.display = 'none';
+            document.getElementById('done-btn').style.display = 'none';
+            document.getElementById('friends-wishes-scene').style.display = 'flex';
+            document.getElementById('wishes-scroller').style.animation = 'scrollUp 35s linear forwards';
+            confetti({ particleCount: 200, spread: 90, origin: { y: 0.8 }, zIndex: 20001 });
         }
 
         const targetDate = new Date("April 13, 2026 00:00:00").getTime();
         setInterval(() => {
-            const diff = targetDate - new Date().getTime();
-            if (diff > 0) {
-                document.getElementById("days").innerText = Math.floor(diff/86400000).toString().padStart(2, '0');
-                document.getElementById("hours").innerText = Math.floor((diff%86400000)/3600000).toString().padStart(2, '0');
-                document.getElementById("mins").innerText = Math.floor((diff%3600000)/60000).toString().padStart(2, '0');
-                document.getElementById("secs").innerText = Math.floor((diff%60000)/1000).toString().padStart(2, '0');
+            const diff = targetDate - Date.now();
+            if(diff > 0) {
+                document.getElementById("days").innerText = Math.floor(diff/86400000).toString().padStart(2,'0');
+                document.getElementById("hours").innerText = Math.floor((diff%86400000)/3600000).toString().padStart(2,'0');
+                document.getElementById("mins").innerText = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
+                document.getElementById("secs").innerText = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
             }
         }, 1000);
 
@@ -293,17 +348,14 @@
         let dots = [];
         function initM() {
             mCanvas.width = window.innerWidth; mCanvas.height = window.innerHeight;
-            dots = []; for(let i=0; i<40; i++) dots.push({x:Math.random()*mCanvas.width, y:Math.random()*mCanvas.height, o:Math.random()*0.3, v:Math.random()*0.3+0.1});
+            dots = Array(40).fill().map(() => ({ x: Math.random()*mCanvas.width, y: Math.random()*mCanvas.height, o: Math.random()*0.3, v: Math.random()*0.3+0.1 }));
         }
         function animM() {
             mCtx.clearRect(0,0,mCanvas.width, mCanvas.height);
-            if(document.getElementById('page-landing').style.display !== 'none') {
-                dots.forEach(d => { mCtx.fillStyle = `rgba(255,255,255,${d.o})`; mCtx.beginPath(); mCtx.arc(d.x, d.y, 1, 0, Math.PI*2); mCtx.fill(); d.y += d.v; if(d.y > mCanvas.height) d.y = -5; });
-                requestAnimationFrame(animM);
-            }
+            dots.forEach(d => { mCtx.fillStyle = `rgba(255,255,255,${d.o})`; mCtx.beginPath(); mCtx.arc(d.x, d.y, 1, 0, Math.PI*2); mCtx.fill(); d.y += d.v; if(d.y > mCanvas.height) d.y = -5; });
+            requestAnimationFrame(animM);
         }
         initM(); animM();
-        window.addEventListener('resize', initM);
     </script>
 </body>
 </html>
