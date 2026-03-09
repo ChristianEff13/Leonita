@@ -19,6 +19,37 @@
         body { background-color: var(--bg); color: var(--white); font-family: 'Montserrat', sans-serif; transition: background-color 2.5s cubic-bezier(0.4, 0, 0.2, 1); min-height: 100vh; overflow: hidden; }
         body.allow-scroll { overflow-y: auto; overflow-x: hidden; }
 
+        /* --- Console Button --- */
+        .console-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            color: rgba(255, 255, 255, 0.4);
+            text-decoration: none;
+            transition: 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            border: 1px solid rgba(197, 160, 89, 0.2);
+            border-radius: 50%;
+            background: rgba(3, 8, 10, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        .console-link:hover {
+            color: var(--gold);
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.3);
+            transform: scale(1.05);
+        }
+        .console-link svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
         /* --- Landing Page --- */
         #page-landing { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; width: 100%; padding: 20px; transition: opacity 1.5s ease; }
         .sunbeams { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% -20%, #1a2a30 0%, #03080a 80%); }
@@ -101,6 +132,13 @@
     </style>
 </head>
 <body>
+
+    <!-- Small Console Link (Top Left) -->
+    <a href="https://christianeff13.github.io/CrossDataGame/" target="_blank" class="console-link" title="Cross Data Game">
+        <svg viewBox="0 0 24 24">
+            <path d="M20,12H18V10H16V12H14V14H16V16H18V14H20V12M9,10H7V12H5V14H7V16H9V14H11V12H9V10M22,6H2V18H22V6M22,4A2,2 0 0,1 24,6V18A2,2 0 0,1 22,20H2A2,2 0 0,1 0,18V6A2,2 0 0,1 2,4H22Z" />
+        </svg>
+    </a>
 
     <!-- Landing Page -->
     <div id="page-landing">
@@ -421,7 +459,6 @@
             if(anyActive) requestAnimationFrame(mainTextLoop); else setTimeout(startScroller, 800);
         }
 
-        // --- NEW IMPROVED SCROLLER LOGIC ---
         let isUserScrolling = false;
         let scrollTimeout;
         let scrollPos = 0;
@@ -442,7 +479,7 @@
                     scrollTimeout = setTimeout(() => {
                         isUserScrolling = false;
                         scrollPos = container.scrollTop;
-                    }, 500); // 0.5 detik pause
+                    }, 500); 
                 };
                 container.addEventListener('wheel', handleActivity);
                 container.addEventListener('touchstart', handleActivity);
@@ -464,7 +501,6 @@
                 scrollPos += 0.5;
                 container.scrollTop = scrollPos;
                 if(container.scrollTop >= container.scrollHeight - container.clientHeight) {
-                    // Reset to top if end reached
                     scrollPos = 0;
                 }
             } else {
