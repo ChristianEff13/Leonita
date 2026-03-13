@@ -19,6 +19,12 @@
         body { background-color: var(--bg); color: var(--white); font-family: 'Montserrat', sans-serif; transition: background-color 2.5s cubic-bezier(0.4, 0, 0.2, 1); min-height: 100vh; overflow: hidden; }
         body.allow-scroll { overflow-y: auto; overflow-x: hidden; }
 
+        /* --- Lightbox --- */
+        #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 30000; display: none; justify-content: center; align-items: center; cursor: zoom-out; opacity: 0; transition: opacity 0.3s; backdrop-filter: blur(5px); }
+        #lightbox img { max-width: 90%; max-height: 85vh; border: 8px solid white; border-bottom: 25px solid white; border-radius: 2px; box-shadow: 0 0 40px rgba(0,0,0,0.6); transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #lightbox.show { opacity: 1; }
+        #lightbox.show img { transform: scale(1); }
+
         /* --- Console Button --- */
         .console-link {
             position: fixed;
@@ -49,6 +55,33 @@
             height: 20px;
             fill: currentColor;
         }
+
+        /* --- Navigation Controls --- */
+        .nav-controls {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 99999;
+            display: none; 
+            gap: 15px;
+        }
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--gold);
+            border: 1px solid rgba(197, 160, 89, 0.3);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            transition: 0.3s ease;
+        }
+        .nav-btn:hover { background: var(--gold); color: white; border-color: var(--gold); box-shadow: 0 0 15px rgba(197, 160, 89, 0.4); }
+        .nav-btn svg { width: 24px; height: 24px; fill: currentColor; }
+        .nav-btn.disabled { opacity: 0.2; cursor: not-allowed; }
 
         /* --- Landing Page --- */
         #page-landing { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; width: 100%; padding: 20px; transition: opacity 1.5s ease; }
@@ -90,7 +123,8 @@
         .center-birthday-text { position: absolute; font-family: 'Dancing Script', cursive; color: var(--gold); text-align: center; z-index: 50; pointer-events: none; text-shadow: 2px 2px 15px rgba(255, 255, 255, 0.6); }
         .center-birthday-text .hd-title { font-size: clamp(2rem, 6vw, 4rem); font-weight: 600; }
         .center-birthday-text .name-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 700; }
-        .polaroid { position: absolute; background: white; padding: 5px 5px 18px 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); width: clamp(70px, 12vw, 90px); transition: 0.4s; z-index: 20; }
+        
+        .polaroid { position: absolute; background: white; padding: 5px 5px 18px 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); width: clamp(70px, 12vw, 90px); transition: 0.4s; z-index: 20; cursor: zoom-in; }
         .polaroid img { width: 100%; height: clamp(60px, 10vw, 85px); object-fit: cover; }
         .polaroid:hover { transform: scale(2.5) rotate(0deg) !important; z-index: 1000; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
 
@@ -102,8 +136,22 @@
 
         /* --- Night Scene --- */
         #page-surprise { display: none; position: fixed; inset: 0; z-index: 10000; background: var(--bg-night); opacity: 0; transition: opacity 2s ease; flex-direction: column; justify-content: center; align-items: center; text-align: center; overflow: hidden; }
-        .night-sky { position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle at 10% 20%, #0a151a 0%, #010305 70%); overflow: hidden; }
-        .moon { position: absolute; top: 10%; right: 15%; width: 100px; height: 100px; background: radial-gradient(circle at 30% 30%, #ffffff, #f0f0f0 40%, #d1d1d1 100%); border-radius: 50%; box-shadow: 0 0 50px rgba(255,255,255,0.25), inset -15px -15px 30px rgba(0,0,0,0.15); filter: drop-shadow(0 0 5px white); transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .night-sky { position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle at 20% 30%, rgba(10, 25, 45, 1) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(15, 20, 35, 1) 0%, transparent 50%), linear-gradient(135deg, #010305 0%, #03080e 50%, #010305 100%); overflow: hidden; }
+        
+        .moon { 
+            position: absolute; top: 10%; right: 15%; width: 100px; height: 100px; 
+            background-color: #e6e8e3;
+            background-image: 
+                radial-gradient(circle at 30% 30%, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.12) 15%, transparent 20%),
+                radial-gradient(circle at 70% 60%, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.1) 20%, transparent 25%),
+                radial-gradient(circle at 40% 70%, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.12) 10%, transparent 15%),
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.8) 0%, transparent 50%);
+            border-radius: 50%; 
+            box-shadow: 0 0 60px rgba(255,255,255,0.4), inset -15px -15px 30px rgba(0,0,0,0.4), inset 10px 10px 20px rgba(255,255,255,0.9); 
+            filter: drop-shadow(0 0 8px white); 
+            transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        
         #wish-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 8vw, 4rem); font-style: italic; color: var(--gold); opacity: 0; transition: 1.5s; margin-bottom: 30px; }
         
         #bg-fireworks-canvas { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
@@ -133,19 +181,34 @@
 </head>
 <body>
 
-    <!-- Small Console Link (Top Left) -->
-    <a href="https://christianeff13.github.io/CrossDataGame/" target="_blank" class="console-link" title="Cross Data Game">
+    <!-- Lightbox -->
+    <div id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="Memory">
+    </div>
+
+    <!-- Console Link Original -->
+    <a href="https://christianeff13.github.io/CrossDataGame/" target="_blank" class="console-link" id="my-console-link" title="Cross Data Game">
         <svg viewBox="0 0 24 24">
             <path d="M20,12H18V10H16V12H14V14H16V16H18V14H20V12M9,10H7V12H5V14H7V16H9V14H11V12H9V10M22,6H2V18H22V6M22,4A2,2 0 0,1 24,6V18A2,2 0 0,1 22,20H2A2,2 0 0,1 0,18V6A2,2 0 0,1 2,4H22Z" />
         </svg>
     </a>
+
+    <!-- Navigation Controls -->
+    <div class="nav-controls" id="nav-container">
+        <button class="nav-btn" title="Back" onclick="movePage(-1)">
+            <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </button>
+        <button class="nav-btn" id="fwd-btn" title="Forward (Admin Only)" onclick="movePage(1)">
+            <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+        </button>
+    </div>
 
     <!-- Landing Page -->
     <div id="page-landing">
         <div class="sunbeams"><div class="ray"></div></div>
         <section style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%;">
             <div class="hero"><h1>Nineteen to <span style="color: var(--gold)">Twenty</span></h1></div>
-            <div class="countdown">
+            <div class="countdown" id="countdown-container">
                 <div class="count-item"><span id="days">00</span><span>Days</span></div>
                 <div class="count-item"><span id="hours">00</span><span>Hours</span></div>
                 <div class="count-item"><span id="mins">00</span><span>Mins</span></div>
@@ -191,7 +254,7 @@
             <div id="private-content">
                 <div id="romantic-message">
                     <p style="font-family: 'Cormorant Garamond'; font-style: italic; font-size: 1.8rem; font-weight: 600;">"Maybe I’m not the best boyfriend, but you are truly the best girlfriend."</p>
-                    <p style="color: var(--gold); margin: 20px 0; font-family: 'Noto Sans SC'; letter-spacing: 2px;">“也许我不是最好的男朋友，但你绝对是最好的女朋友。”</p>
+                    <p style="color: var(--gold); margin: 20px 0; font-family: 'Noto Sans SC'; letter-spacing: 2px;">“也许我 bukan pacar terbaik, tapi kamu benar-benar pacar terbaik.”</p>
                     <div class="personal-note"><span id="typewriter-display"></span><span id="typewriter-cursor"></span></div>
                 </div>
                 <div id="generic-message" style="display:none; padding: 40px 0;">
@@ -241,27 +304,68 @@
 
     <script>
         let accessLevel = "none";
-        const photos = ['https://i.postimg.cc/Q9t6F51F/image.jpg', 'https://i.postimg.cc/YG9XvgYL/image.jpg', 'https://i.postimg.cc/sQXnMS77/image.jpg', 'https://i.postimg.cc/mzDdPMC7/image.jpg', 'https://i.postimg.cc/G82M4YGJ/image.jpg', 'https://i.postimg.cc/gXJMxR8H/image.jpg', 'https://i.postimg.cc/0rmDqsWQ/image.jpg', 'https://i.postimg.cc/5jvLMV7t/image.jpg', 'https://i.postimg.cc/TyTNXBPc/image.jpg', 'https://i.postimg.cc/XZxHNxZm/image.jpg', 'https://i.postimg.cc/qtQbBQtD/image.jpg', 'https://i.postimg.cc/QBS4NSBP/image.jpg', 'https://i.postimg.cc/SXVTQVXv/image.jpg', 'https://i.postimg.cc/KKQqcQkS/image.jpg', 'https://i.postimg.cc/67zj6z2X/image.jpg', 'https://i.postimg.cc/4KwL4w7R/image.jpg', 'https://i.postimg.cc/2qTcjTbm/image.jpg', 'https://i.postimg.cc/QBS4NS9x/image.jpg', 'https://i.postimg.cc/KkH0BzDM/image.jpg', 'https://i.postimg.cc/3y9Sr94r/image.jpg', 'https://i.postimg.cc/8FwKkwJC/image.jpg', 'https://i.postimg.cc/JyK67KD0/image.jpg', 'https://i.postimg.cc/LYXyJfL2/image.jpg', 'https://i.postimg.cc/S2sZn8Cm/image.jpg', 'https://i.postimg.cc/WF39drgt/image.jpg', 'https://i.postimg.cc/47d8YtVK/image.jpg', 'https://i.postimg.cc/R6DgKFL7/image.jpg', 'https://i.postimg.cc/dkx5r1jT/image.jpg', 'https://i.postimg.cc/7GWK06ng/image.jpg', 'https://i.postimg.cc/KkH0BzDN/image.jpg', 'https://i.postimg.cc/23vhfDcm/image.jpg', 'https://i.postimg.cc/BLVmH6Bp/image.jpg', 'https://i.postimg.cc/Hch6Xx93/image.jpg'];
-        
-        const fullText = "Halooo Lemon, sekarang kamu udah umur 20 lohh, gak berasa yaa waktu udah bawa kamu ke umur yang sekarang, dan mungkin kamu gak nyangka juga bisa ketemu aku di tengah-tengah perjalanan kamu. \n\nHappyy birthdayy yaaa My Deer Lemonn, mungkin aku bukan pacar yang terbaik, tapii kamuu yangg merupakan pacar terbaik buatt aku. Aku berdoa untuk kesehatan kamu, perlindungan buat kamu, berkat melimpah, umur yang panjang, dan masa depan yang Indah buat kamu Leyonn (terutama di Beauty Industry).\n\nMaaff jugaa yaa kalau aku engga bisa kasih kamu hadiah yangg mungkin kamu inginkan. Tapi aku harap kamu suka hadiah yangg akan aku kasih ke kamu Lemonn.\n\nSekali lagii happyy birthdayyy yaaa Lemonnn, My Deer Lemonnn. I Lovee Youu Leonita Kumala Dewi, our love will be forever.";
+        let currentPassword = ""; 
+        let activePageIndex = 0;
+        let twObserver = null;
+        let twTimeout = null;
+        let adminBypassCountdown = false;
+        let countdownInterval;
+        let ariesHighlight = 0; 
+        let popped = 0;
+        let gameActive = false;
+        let bgFireworks = [];
+        let textFireworks = [];
+        let isUserScrolling = false;
+        let scrollTimeout;
+        let scrollPos = 0;
+        let autoScrollActive = false;
+        let scrollerInitialized = false;
 
-        let popped = 0, gameActive = false;
+        const pageFlow = ['page-landing', 'login-overlay', 'game-session', 'page-celebration', 'page-surprise'];
         const colors = ['#FF5E5E', '#FFD700', '#FF7ED4', '#70FF8B', '#70D1FF', '#FF9F43'];
+        const photos = ['https://i.postimg.cc/Q9t6F51F/image.jpg', 'https://i.postimg.cc/YG9XvgYL/image.jpg', 'https://i.postimg.cc/sQXnMS77/image.jpg', 'https://i.postimg.cc/mzDdPMC7/image.jpg', 'https://i.postimg.cc/G82M4YGJ/image.jpg', 'https://i.postimg.cc/gXJMxR8H/image.jpg', 'https://i.postimg.cc/0rmDqsWQ/image.jpg', 'https://i.postimg.cc/5jvLMV7t/image.jpg', 'https://i.postimg.cc/TyTNXBPc/image.jpg', 'https://i.postimg.cc/XZxHNxZm/image.jpg', 'https://i.postimg.cc/qtQbBQtD/image.jpg', 'https://i.postimg.cc/QBS4NSBP/image.jpg', 'https://i.postimg.cc/SXVTQVXv/image.jpg', 'https://i.postimg.cc/KKQqcQkS/image.jpg', 'https://i.postimg.cc/67zj6z2X/image.jpg', 'https://i.postimg.cc/4KwL4w7R/image.jpg', 'https://i.postimg.cc/2qTcjTbm/image.jpg', 'https://i.postimg.cc/QBS4NS9x/image.jpg', 'https://i.postimg.cc/KkH0BzDM/image.jpg', 'https://i.postimg.cc/3y9Sr94r/image.jpg', 'https://i.postimg.cc/8FwKkwJC/image.jpg', 'https://i.postimg.cc/JyK67KD0/image.jpg', 'https://i.postimg.cc/LYXyJfL2/image.jpg', 'https://i.postimg.cc/S2sZn8Cm/image.jpg', 'https://i.postimg.cc/WF39drgt/image.jpg', 'https://i.postimg.cc/47d8YtVK/image.jpg', 'https://i.postimg.cc/R6DgKFL7/image.jpg', 'https://i.postimg.cc/dkx5r1jT/image.jpg', 'https://i.postimg.cc/7GWK06ng/image.jpg', 'https://i.postimg.cc/23vhfDcm/image.jpg', 'https://i.postimg.cc/BLVmH6Bp/image.jpg', 'https://i.postimg.cc/Hch6Xx93/image.jpg'];
+        const fullText = "Halooo Lemon, sekarang kamu udah umur 20 lohh, gak berasa yaa waktu udah bawa kamu ke umur yang sekarang, dan mungkin kamu gak nyangka juga bisa ketemu aku di tengah-tengah perjalanan kamu. \n\nHappyy birthdayy yaaa My Deer Lemonn, mungkin aku bukan pacar yang terbaik, tapii kamuu yangg merupakan pacar terbaik buatt aku. Aku berdoa untuk kesehatan kamu, perlindungan buat kamu, berkat melimpah, umur yang panjang, dan masa depan yang Indah buat kamu Leyonn (terutama di Beauty Industry).\n\nMaaff jugaa yaa kalau aku engga bisa kasih kamu hadiah yangg mungkin kamu inginkan. Tapi aku harap kamu suka hadiah yangg akan aku kasih ke kamu Lemonn.\n\nSekali lagii happyy birthdayyy yaaa Lemonnn, My Deer Lemonnn. I Lovee Youu Leonita Kumala Dewi, our love will be forever.";
+        const ariesStars = [{x: 0.50, y: 0.40, r: 4}, {x: 0.58, y: 0.47, r: 3}, {x: 0.63, y: 0.60, r: 2}, {x: 0.73, y: 0.70, r: 2.5}];
+
         const fwCanvas = document.getElementById('firework-text-canvas');
         const fwCtx = fwCanvas.getContext('2d');
         const bgFwCanvas = document.getElementById('bg-fireworks-canvas');
         const bgFwCtx = bgFwCanvas.getContext('2d');
 
+        function openLightbox(src) {
+            const lb = document.getElementById('lightbox');
+            if(!lb) return;
+            document.getElementById('lightbox-img').src = src;
+            lb.style.display = 'flex';
+            setTimeout(() => lb.classList.add('show'), 10);
+        }
+
+        function closeLightbox() {
+            const lb = document.getElementById('lightbox');
+            if(!lb) return;
+            lb.classList.remove('show');
+            setTimeout(() => lb.style.display = 'none', 300);
+        }
+
+        function clearAllIntervals() {
+            if(window.balloonInt) { clearInterval(window.balloonInt); window.balloonInt = null; }
+            if(window.fwInt) { clearInterval(window.fwInt); window.fwInt = null; }
+            if(twTimeout) { clearTimeout(twTimeout); twTimeout = null; }
+            bgFireworks = []; textFireworks = [];
+        }
+
         function showLogin() {
             const overlay = document.getElementById('login-overlay');
             overlay.style.display = 'flex';
             setTimeout(() => overlay.style.opacity = '1', 10);
+            activePageIndex = 1;
         }
 
         function hideLogin() {
             const overlay = document.getElementById('login-overlay');
             overlay.style.opacity = '0';
             setTimeout(() => overlay.style.display = 'none', 500);
+            activePageIndex = 0;
         }
 
         function handlePwKey(e) { if(e.key === "Enter") checkPassword(); }
@@ -269,21 +373,115 @@
         function checkPassword() {
             const input = document.getElementById('pw-input').value;
             const error = document.getElementById('error-msg');
-            if (input === "HBDLEON") { accessLevel = "full"; startJourney(); } 
-            else if (input === "Leonita123") { accessLevel = "basic"; startJourney(); document.getElementById('romantic-message').style.display = 'none'; document.getElementById('generic-message').style.display = 'block'; document.getElementById('final-wish-btn').style.display = 'inline-block'; } 
-            else { error.style.display = 'block'; }
+            
+            if (input === "admin123" || input === "HBDLEON" || input === "Leonita123") {
+                currentPassword = input;
+                const navContainer = document.getElementById('nav-container');
+                if (navContainer) navContainer.style.display = 'flex';
+                
+                const fwdBtn = document.getElementById('fwd-btn');
+                if (input === "admin123") {
+                    accessLevel = "full";
+                    adminBypassCountdown = true;
+                    finishCountdown();
+                    if (fwdBtn) fwdBtn.classList.remove('disabled');
+                } else if (input === "HBDLEON") {
+                    accessLevel = "full";
+                    if (fwdBtn) fwdBtn.classList.add('disabled');
+                } else {
+                    accessLevel = "basic";
+                    if (fwdBtn) fwdBtn.classList.add('disabled');
+                    document.getElementById('romantic-message').style.display = 'none';
+                    document.getElementById('generic-message').style.display = 'block';
+                    document.getElementById('final-wish-btn').style.display = 'inline-block';
+                }
+                startJourney();
+            } else {
+                error.style.display = 'block';
+            }
+        }
+
+        function movePage(step) {
+            if (step === 1 && currentPassword !== "admin123") return;
+            
+            let nextIndex = activePageIndex + step;
+            if (nextIndex >= 0 && nextIndex < pageFlow.length) {
+                activePageIndex = nextIndex;
+                const targetId = pageFlow[activePageIndex];
+
+                clearAllIntervals();
+                gameActive = false; 
+                const bc = document.getElementById('balloon-container');
+                if (bc) bc.innerHTML = '';
+                
+                const cLink = document.getElementById('my-console-link');
+                if (cLink) {
+                    if (nextIndex < 2) {
+                        cLink.style.display = 'flex';
+                        setTimeout(() => cLink.style.opacity = '1', 50);
+                    } else {
+                        cLink.style.opacity = '0';
+                        setTimeout(() => cLink.style.display = 'none', 300);
+                    }
+                }
+
+                pageFlow.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) { 
+                        el.style.transition = 'none'; 
+                        el.style.opacity = '0'; 
+                        el.style.display = 'none'; 
+                        setTimeout(() => { el.style.transition = ''; }, 50);
+                    }
+                });
+
+                const targetEl = document.getElementById(targetId);
+                if (targetEl) {
+                    targetEl.style.display = (targetId === 'page-celebration' || targetId === 'page-surprise') ? 'block' : 'flex';
+                    setTimeout(() => targetEl.style.opacity = '1', 50);
+                }
+
+                if (targetId === 'page-landing' || targetId === 'login-overlay') {
+                    document.body.classList.remove('allow-scroll');
+                    window.scrollTo(0, 0);
+                } else if (targetId === 'game-session') {
+                    gameActive = true; popped = 0; document.getElementById('pop-count').innerText = 0;
+                    initGameBokeh(); spawnLoop();
+                } else if (targetId === 'page-celebration') {
+                    document.body.classList.add('allow-scroll');
+                    initHeart(); startObservers();
+                    window.balloonInt = setInterval(() => createBalloon('bg'), 2000);
+                } else if (targetId === 'page-surprise') {
+                    document.body.classList.remove('allow-scroll');
+                    goToNightScene();
+                }
+            }
         }
 
         function startJourney() {
             const landing = document.getElementById('page-landing');
             const overlay = document.getElementById('login-overlay');
+            const cLink = document.getElementById('my-console-link');
+            
             overlay.style.opacity = '0';
             landing.style.opacity = '0';
-            setTimeout(() => { landing.style.display = 'none'; overlay.style.display = 'none'; document.getElementById('game-session').style.display = 'flex'; initGameBokeh(); gameActive = true; spawnLoop(); }, 1000);
+            if (cLink) cLink.style.opacity = '0'; 
+            
+            setTimeout(() => { 
+                landing.style.display = 'none'; 
+                overlay.style.display = 'none'; 
+                if (cLink) cLink.style.display = 'none'; 
+                document.getElementById('game-session').style.display = 'flex'; 
+                initGameBokeh(); 
+                gameActive = true; 
+                spawnLoop(); 
+                activePageIndex = 2; 
+            }, 1000);
         }
 
         function initGameBokeh() {
             const container = document.getElementById('bokeh-container');
+            container.innerHTML = '';
             for(let i=0; i<15; i++) {
                 const b = document.createElement('div');
                 b.className = 'bokeh';
@@ -318,60 +516,103 @@
         }
 
         function triggerFinale() {
-            gameActive = false;
+            gameActive = false; activePageIndex = 3;
             setTimeout(() => {
                 document.getElementById('game-session').style.opacity = '0';
-                setTimeout(() => { document.getElementById('game-session').style.display = 'none'; document.body.classList.add('allow-scroll'); const celeb = document.getElementById('page-celebration'); celeb.style.display = 'block'; celeb.style.opacity = '1'; initHeart(); startObservers(); setInterval(() => createBalloon('bg'), 2000); }, 2000);
+                setTimeout(() => { 
+                    document.getElementById('game-session').style.display = 'none'; 
+                    document.body.classList.add('allow-scroll'); 
+                    const celeb = document.getElementById('page-celebration'); 
+                    celeb.style.display = 'block'; 
+                    celeb.style.opacity = '1'; 
+                    initHeart(); startObservers(); clearAllIntervals();
+                    window.balloonInt = setInterval(() => createBalloon('bg'), 2000);
+                }, 2000);
             }, 1000);
         }
 
         function initHeart() {
             const container = document.getElementById('heart-gallery');
+            if (container.children.length > 1) return;
             photos.forEach((src, i) => {
                 const t = (i / photos.length) * (2 * Math.PI);
                 const x = 16 * Math.pow(Math.sin(t), 3) * 18;
                 const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * 18;
                 const card = document.createElement('div');
                 card.className = 'polaroid';
-                card.style.left = `calc(50% + ${x}px - 45px)`; card.style.top = `calc(50% + ${y}px - 45px)`;
+                card.style.left = `calc(50% + ${x}px - 45px)`; 
+                card.style.top = `calc(50% + ${y}px - 45px)`;
+                card.setAttribute('onclick', `openLightbox('${src}')`);
                 card.innerHTML = `<img src="${src}">`;
                 container.appendChild(card);
             });
         }
 
         function startObservers() {
+            if (twObserver) twObserver.disconnect();
+            if (twTimeout) clearTimeout(twTimeout);
+            document.getElementById('typewriter-display').textContent = '';
+            document.getElementById('typewriter-cursor').style.display = 'inline-block';
             let started = false;
-            const obs = new IntersectionObserver((entries) => { if(entries[0].isIntersecting && !started) { started = true; if(accessLevel === "full") typeWriter(0); } }, { threshold: 0.5 });
-            obs.observe(document.getElementById('trigger-box'));
+            twObserver = new IntersectionObserver((entries) => { 
+                if(entries[0].isIntersecting && !started) { 
+                    started = true; 
+                    if(accessLevel === "full") {
+                        if (currentPassword === "admin123") {
+                            document.getElementById('typewriter-display').textContent = fullText;
+                            document.getElementById('typewriter-cursor').style.display = 'none';
+                            document.getElementById('final-wish-btn').style.display = 'inline-block';
+                        } else {
+                            typeWriter(0);
+                        }
+                    }
+                } 
+            }, { threshold: 0.5 });
+            twObserver.observe(document.getElementById('trigger-box'));
         }
 
         function typeWriter(i) {
             const d = document.getElementById('typewriter-display');
-            if (i < fullText.length) { d.textContent += fullText.charAt(i); setTimeout(() => typeWriter(i + 1), 25); }
-            else { document.getElementById('typewriter-cursor').style.display = 'none'; document.getElementById('final-wish-btn').style.display = 'inline-block'; }
+            if (d && i < fullText.length) { 
+                d.textContent += fullText.charAt(i); 
+                twTimeout = setTimeout(() => typeWriter(i + 1), 25); 
+            } else if (d) { 
+                document.getElementById('typewriter-cursor').style.display = 'none'; 
+                document.getElementById('final-wish-btn').style.display = 'inline-block'; 
+            }
         }
 
         function goToNightScene() {
+            activePageIndex = 4;
             document.getElementById('page-celebration').style.opacity = '0';
+            clearAllIntervals();
             setTimeout(() => { window.scrollTo(0,0); document.body.classList.remove('allow-scroll'); const p = document.getElementById('page-surprise'); p.style.display = 'flex'; p.style.opacity = '1'; initNightStars(); setTimeout(initShootingStarSequence, 1500); }, 1000);
         }
 
-        const ariesStars = [{x: 0.50, y: 0.40, r: 4}, {x: 0.58, y: 0.47, r: 3}, {x: 0.63, y: 0.60, r: 2}, {x: 0.73, y: 0.70, r: 2.5}];
-
         function initNightStars() {
-            const c = document.getElementById('stars-night'); const ctx = c.getContext('2d');
+            const c = document.getElementById('stars-night'); if(!c) return; const ctx = c.getContext('2d');
             c.width = window.innerWidth; c.height = window.innerHeight;
             let stars = Array(250).fill().map(() => ({ x: Math.random()*c.width, y: Math.random()*c.height, o: Math.random(), s: Math.random()*0.015, r: Math.random()*1.5 + 0.5 }));
             function draw() { 
+                if (activePageIndex !== 4) return;
                 ctx.clearRect(0,0,c.width, c.height); 
                 stars.forEach(s => { ctx.fillStyle = `rgba(255,255,255,${s.o})`; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill(); s.o += s.s; if(s.o > 1 || s.o < 0) s.s = -s.s; }); 
-                ariesStars.forEach(s => { ctx.fillStyle = '#fff'; ctx.shadowBlur = 10; ctx.shadowColor = 'white'; ctx.beginPath(); ctx.arc(s.x * c.width, s.y * c.height, s.r, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0; });
+                ariesStars.forEach(s => { 
+                    const x = s.x * c.width, y = s.y * c.height;
+                    const baseR = 1.5 + (s.r - 1.5) * ariesHighlight; 
+                    if (ariesHighlight > 0) {
+                        ctx.beginPath(); const glow = ctx.createRadialGradient(x, y, baseR, x, y, baseR * 4);
+                        glow.addColorStop(0, `rgba(255, 240, 200, ${0.8 * ariesHighlight})`); glow.addColorStop(1, 'rgba(255, 240, 200, 0)');
+                        ctx.fillStyle = glow; ctx.arc(x, y, baseR * 4, 0, Math.PI*2); ctx.fill();
+                    }
+                    ctx.beginPath(); ctx.fillStyle = `rgba(255, 255, 255, ${0.6 + 0.4 * ariesHighlight})`; ctx.shadowBlur = 15 * ariesHighlight; ctx.shadowColor = '#ffffff';
+                    ctx.arc(x, y, baseR, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
+                });
                 requestAnimationFrame(draw); 
             }
             draw();
         }
 
-        let bgFireworks = [];
         function createBGFirework() {
             const x = Math.random() * bgFwCanvas.width;
             const y = Math.random() * (bgFwCanvas.height * 0.5) + (bgFwCanvas.height * 0.1);
@@ -379,47 +620,130 @@
             const particles = [];
             for(let i=0; i<60; i++) {
                 const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 4 + 2;
-                particles.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: 1.0, decay: Math.random() * 0.02 + 0.01 });
+                const speed = Math.random() * 5 + 2;
+                particles.push({ 
+                    x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: 1.0, 
+                    decay: Math.random() * 0.015 + 0.01, color: Math.random() > 0.5 ? color : '#ffffff' 
+                });
             }
-            bgFireworks.push({ particles, color });
+            bgFireworks.push({ particles });
         }
 
         function animateBGFireworks() {
+            if (activePageIndex !== 4) return;
             bgFwCtx.clearRect(0, 0, bgFwCanvas.width, bgFwCanvas.height);
-            bgFwCanvas.width = window.innerWidth; bgFwCanvas.height = window.innerHeight;
+            if(bgFwCanvas.width !== window.innerWidth) bgFwCanvas.width = window.innerWidth;
+            if(bgFwCanvas.height !== window.innerHeight) bgFwCanvas.height = window.innerHeight;
             bgFireworks.forEach((fw, fIdx) => {
                 fw.particles.forEach((p) => {
-                    p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.life -= p.decay;
-                    if(p.life > 0) { bgFwCtx.globalAlpha = p.life; bgFwCtx.fillStyle = fw.color; bgFwCtx.beginPath(); bgFwCtx.arc(p.x, p.y, 1.5, 0, Math.PI * 2); bgFwCtx.fill(); }
+                    p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.vx *= 0.98; p.vy *= 0.98; p.life -= p.decay;
+                    if(p.life > 0) { 
+                        bgFwCtx.beginPath(); bgFwCtx.moveTo(p.x, p.y);
+                        bgFwCtx.lineTo(p.x - p.vx * 2.5, p.y - p.vy * 2.5);
+                        bgFwCtx.strokeStyle = p.color; bgFwCtx.lineWidth = 2; bgFwCtx.lineCap = 'round';
+                        bgFwCtx.globalAlpha = Math.max(0, p.life); bgFwCtx.stroke(); 
+                    }
                 });
                 if(fw.particles.every(p => p.life <= 0)) bgFireworks.splice(fIdx, 1);
             });
             requestAnimationFrame(animateBGFireworks);
         }
 
+        // BINTANG JATUH (SHOOTING STAR) PERBAIKAN ARAH EKOR
         function initShootingStarSequence() {
-            const c = document.getElementById('shooting-star-canvas'); const ctx = c.getContext('2d');
+            const c = document.getElementById('shooting-star-canvas'); if(!c) return; const ctx = c.getContext('2d');
             c.width = window.innerWidth; c.height = window.innerHeight;
             let ssX = c.width + 100, ssY = -100, ssActive = true;
-            function animate() { if(!ssActive) return; ctx.clearRect(0,0,c.width, c.height); ssX -= 15; ssY += 12; const g = ctx.createLinearGradient(ssX, ssY, ssX + 400, ssY - 320); g.addColorStop(0, 'white'); g.addColorStop(1, 'transparent'); ctx.strokeStyle = g; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(ssX, ssY); ctx.lineTo(ssX + 400, ssY - 320); ctx.stroke(); if(ssX < -500) { ssActive = false; showWishUI(); } else requestAnimationFrame(animate); }
+            let particles = [];
+            let starPath = []; // Untuk melacak posisi sebelumnya agar ekor selaras
+            
+            function animate() { 
+                if ((activePageIndex !== 4 || !ssActive) && particles.length === 0) return;
+                ctx.clearRect(0,0,c.width, c.height); 
+                
+                if (ssActive) {
+                    // Update posisi dengan lengkungan halus
+                    const vx = -15;
+                    const vy = 10 + Math.cos(ssX/150)*3;
+                    ssX += vx; 
+                    ssY += vy;
+                    
+                    starPath.push({x: ssX, y: ssY});
+                    if(starPath.length > 20) starPath.shift();
+
+                    // Gambar Ekor (Trail) yang selaras dengan path gerakan
+                    if(starPath.length > 1) {
+                        const g = ctx.createLinearGradient(ssX, ssY, starPath[0].x, starPath[0].y);
+                        g.addColorStop(0, 'rgba(255, 255, 255, 1)'); 
+                        g.addColorStop(0.2, 'rgba(255, 230, 150, 0.8)'); 
+                        g.addColorStop(1, 'rgba(255, 255, 255, 0)'); 
+                        
+                        ctx.strokeStyle = g; 
+                        ctx.lineWidth = 4; 
+                        ctx.lineCap = 'round';
+                        ctx.beginPath(); 
+                        ctx.moveTo(ssX, ssY); 
+                        for(let i = starPath.length - 2; i >= 0; i--) {
+                            ctx.lineTo(starPath[i].x, starPath[i].y);
+                        }
+                        ctx.stroke(); 
+                    }
+                    
+                    // Star Core Glow
+                    ctx.beginPath();
+                    ctx.arc(ssX, ssY, 5, 0, Math.PI * 2);
+                    ctx.fillStyle = 'white';
+                    ctx.shadowBlur = 25;
+                    ctx.shadowColor = 'white';
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+
+                    // Stardust sparkles
+                    if (Math.random() > 0.3) {
+                        particles.push({
+                            x: ssX, y: ssY,
+                            vx: (Math.random() - 0.5) * 4, 
+                            vy: (Math.random() - 0.5) * 4,
+                            life: 1, 
+                            decay: Math.random() * 0.03 + 0.02,
+                            size: Math.random() * 2 + 1
+                        });
+                    }
+
+                    if(ssX < -600) { ssActive = false; showWishUI(); }
+                }
+
+                // Render sparkles
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    let p = particles[i];
+                    p.x += p.vx; p.y += p.vy; p.life -= p.decay;
+                    if (p.life <= 0) {
+                        particles.splice(i, 1);
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(255, 245, 200, ${p.life})`;
+                        ctx.fill();
+                    }
+                }
+                requestAnimationFrame(animate); 
+            }
             animate();
         }
 
         function showWishUI() {
             document.getElementById('wish-title').style.opacity = '1';
-            setTimeout(() => { const b = document.getElementById('done-btn'); b.style.display = 'inline-block'; setTimeout(() => b.style.opacity = '1', 50); }, 1500);
+            setTimeout(() => { const b = document.getElementById('done-btn'); if(b) { b.style.display = 'inline-block'; setTimeout(() => b.style.opacity = '1', 50); } }, 1500);
         }
 
-        let textFireworks = []; 
         function handleDoneWish() {
-            document.getElementById('wish-title').style.opacity = '0';
-            document.getElementById('done-btn').style.opacity = '0';
+            const wt = document.getElementById('wish-title'); if(wt) wt.style.opacity = '0';
+            const db = document.getElementById('done-btn'); if(db) db.style.opacity = '0';
             setTimeout(() => {
-                document.getElementById('wish-title').style.display = 'none';
-                document.getElementById('done-btn').style.display = 'none';
+                if(wt) wt.style.display = 'none';
+                if(db) db.style.display = 'none';
                 animateBGFireworks();
-                setInterval(createBGFirework, 800);
+                window.fwInt = setInterval(createBGFirework, 800);
                 launchFireworksSimultaneously("HAPPY BIRTHDAY!");
                 requestAnimationFrame(mainTextLoop);
             }, 1000);
@@ -427,95 +751,91 @@
 
         function launchFireworksSimultaneously(text) {
             fwCanvas.width = window.innerWidth; fwCanvas.height = window.innerHeight;
-            const fontSize = Math.min(fwCanvas.width / 12, 80);
+            const fontSize = Math.min(fwCanvas.width / 12, 85);
             fwCtx.font = `bold italic ${fontSize}px 'Cormorant Garamond'`;
-            const totalWidth = fwCtx.measureText(text).width;
-            let currentX = (fwCanvas.width - totalWidth) / 2;
+            let currentX = (fwCanvas.width - fwCtx.measureText(text).width) / 2;
             const centerY = fwCanvas.height * 0.45;
+            textFireworks = [];
             text.split("").forEach(char => {
                 const w = fwCtx.measureText(char).width;
-                if(char !== " ") { textFireworks.push({ char, x: currentX, targetY: centerY, ry: fwCanvas.height + 50, color: colors[Math.floor(Math.random()*colors.length)], exploded: false, alpha: 0, startTime: 0 }); }
+                if(char !== " ") { textFireworks.push({ char, x: currentX, targetY: centerY, ry: fwCanvas.height + 50, color: colors[Math.floor(Math.random()*colors.length)], exploded: false, particles: [], fontSize: fontSize, startTime: 0, trail: [] }); }
                 currentX += w;
             });
         }
 
         function mainTextLoop(now) {
+            if (activePageIndex !== 4) return;
             fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
             let anyActive = false;
             textFireworks.forEach(f => {
                 if(!f.exploded) {
-                    anyActive = true; fwCtx.fillStyle = "#fff"; fwCtx.beginPath(); fwCtx.arc(f.x + 20, f.ry, 4, 0, Math.PI*2); fwCtx.fill(); f.ry -= 15; 
-                    if(f.ry <= f.targetY) { f.exploded = true; f.startTime = now; confetti({ origin: { x: (f.x + 20) / fwCanvas.width, y: f.targetY / fwCanvas.height }, colors: [f.color, '#ffffff', '#ffd700'], particleCount: 150, spread: 90, gravity: 1.2, startVelocity: 40, scalar: 0.8, zIndex: 20000 }); }
+                    anyActive = true; 
+                    f.trail.push({x: f.x + f.fontSize/3, y: f.ry});
+                    if (f.trail.length > 8) f.trail.shift();
+                    if (f.trail.length > 1) {
+                        fwCtx.beginPath(); fwCtx.moveTo(f.trail[0].x, f.trail[0].y);
+                        for(let i=1; i<f.trail.length; i++) { fwCtx.lineTo(f.trail[i].x, f.trail[i].y); }
+                        fwCtx.strokeStyle = f.color; fwCtx.lineWidth = 2; fwCtx.globalAlpha = 0.6; fwCtx.stroke(); fwCtx.globalAlpha = 1;
+                    }
+                    fwCtx.fillStyle = "#fff"; fwCtx.beginPath(); fwCtx.arc(f.x + f.fontSize/3, f.ry, 2.5, 0, Math.PI*2); fwCtx.shadowBlur = 10; fwCtx.shadowColor = f.color; fwCtx.fill(); fwCtx.shadowBlur = 0;
+                    f.ry -= 15; 
+                    if(f.ry <= f.targetY) { 
+                        f.exploded = true; f.startTime = now; 
+                        for(let i=0; i<60; i++) {
+                            const angle = Math.random() * Math.PI * 2; const speed = Math.random() * 6 + 2;
+                            f.particles.push({ x: f.x + f.fontSize/3, y: f.targetY, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, life: 1.0, decay: Math.random()*0.015 + 0.01, color: Math.random() > 0.5 ? f.color : '#ffffff' });
+                        }
+                    }
                 } else {
                     const elapsed = now - f.startTime;
-                    if(elapsed < 4000) { 
-                        anyActive = true; const t = elapsed / 1000;
-                        if(t < 0.3) f.alpha = t * 3.3; else if(t > 2.5) f.alpha = Math.max(0, 1 - (t - 2.5) / 1.5); else f.alpha = 1;
+                    f.particles.forEach(p => {
+                        if (p.life > 0) {
+                            anyActive = true; p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.vx *= 0.98; p.vy *= 0.98; p.life -= p.decay;
+                            fwCtx.beginPath(); fwCtx.moveTo(p.x, p.y); fwCtx.lineTo(p.x - p.vx * 2.5, p.y - p.vy * 2.5);
+                            fwCtx.strokeStyle = p.color; fwCtx.lineWidth = 2; fwCtx.lineCap = 'round'; fwCtx.globalAlpha = Math.max(0, p.life); fwCtx.stroke();
+                        }
+                    });
+                    if(elapsed < 4500) { 
+                        anyActive = true; const t = elapsed / 1000; let alpha = 1;
+                        if(t < 0.3) alpha = t * 3.3; else if(t > 3.0) alpha = Math.max(0, 1 - (t - 3.0) / 1.5);
                         const fontSize = Math.min(fwCanvas.width / 12, 80);
-                        fwCtx.save(); fwCtx.globalAlpha = f.alpha; fwCtx.font = `bold italic ${fontSize}px 'Cormorant Garamond'`; fwCtx.shadowBlur = 20; fwCtx.shadowColor = f.color; fwCtx.fillStyle = f.color; fwCtx.fillText(f.char, f.x, f.targetY); fwCtx.restore();
+                        fwCtx.save(); fwCtx.globalAlpha = alpha; fwCtx.font = `bold italic ${fontSize}px 'Cormorant Garamond'`; fwCtx.shadowBlur = 15; fwCtx.shadowColor = f.color; fwCtx.fillStyle = f.color; fwCtx.fillText(f.char, f.x, f.targetY); fwCtx.restore();
                     }
                 }
             });
             if(anyActive) requestAnimationFrame(mainTextLoop); else setTimeout(startScroller, 800);
         }
 
-        let isUserScrolling = false;
-        let scrollTimeout;
-        let scrollPos = 0;
-        let autoScrollActive = false;
-        let scrollerInitialized = false;
-
         function startScroller() {
             const s = document.getElementById('friends-wishes-scene');
             const container = document.getElementById('wishes-scroller-container');
-            
-            s.style.display = 'flex';
-            autoScrollActive = true;
-
+            if(!s || !container) return;
+            s.style.display = 'flex'; autoScrollActive = true;
             if(!scrollerInitialized) {
-                const handleActivity = () => {
-                    isUserScrolling = true;
-                    clearTimeout(scrollTimeout);
-                    scrollTimeout = setTimeout(() => {
-                        isUserScrolling = false;
-                        scrollPos = container.scrollTop;
-                    }, 500); 
-                };
-                container.addEventListener('wheel', handleActivity);
-                container.addEventListener('touchstart', handleActivity);
-                container.addEventListener('touchmove', handleActivity);
-                scrollerInitialized = true;
+                const handleActivity = () => { isUserScrolling = true; clearTimeout(scrollTimeout); scrollTimeout = setTimeout(() => { isUserScrolling = false; scrollPos = container.scrollTop; }, 500); };
+                container.addEventListener('wheel', handleActivity); container.addEventListener('touchstart', handleActivity); container.addEventListener('touchmove', handleActivity); scrollerInitialized = true;
             }
-
-            setTimeout(() => {
-                s.style.opacity = '1';
-                scrollPos = container.scrollTop;
-                requestAnimationFrame(scrollStep);
-            }, 100);
+            setTimeout(() => { s.style.opacity = '1'; scrollPos = container.scrollTop; requestAnimationFrame(scrollStep); }, 100);
         }
 
         function scrollStep() {
-            if(!autoScrollActive) return;
+            if(!autoScrollActive || activePageIndex !== 4) return;
             const container = document.getElementById('wishes-scroller-container');
-            if(!isUserScrolling) {
-                scrollPos += 0.5;
-                container.scrollTop = scrollPos;
-                if(container.scrollTop >= container.scrollHeight - container.clientHeight) {
-                    scrollPos = 0;
-                }
-            } else {
-                scrollPos = container.scrollTop;
-            }
+            if(!container) return;
+            if(!isUserScrolling) { scrollPos += 0.5; container.scrollTop = scrollPos; if(container.scrollTop >= container.scrollHeight - container.clientHeight) { scrollPos = 0; } }
+            else { scrollPos = container.scrollTop; }
             requestAnimationFrame(scrollStep);
         }
 
         function startAriesJourney() {
             autoScrollActive = false;
             const scene = document.getElementById('friends-wishes-scene');
-            scene.style.opacity = '0';
+            if (scene) scene.style.opacity = '0';
             const stars = document.getElementById('stars-night'), ariesCanvas = document.getElementById('aries-const-canvas'), moon = document.getElementById('moon-element');
-            stars.style.transform = 'scale(1.8) translate(-10%, -10%)'; ariesCanvas.style.transform = 'scale(1.8) translate(-10%, -10%)'; moon.style.transform = 'translate(150%, -150%) scale(0.2)';
-            setTimeout(() => { scene.style.display = 'none'; document.getElementById('final-aries-overlay').style.display = 'flex'; drawAriesLines(); const backBtn = document.getElementById('back-to-wishes'); backBtn.style.display = 'block'; setTimeout(() => backBtn.style.opacity = '1', 500); }, 2000);
+            if (stars) stars.style.transform = 'scale(1.8) translate(-10%, -10%)'; 
+            if (ariesCanvas) ariesCanvas.style.transform = 'scale(1.8) translate(-10%, -10%)'; 
+            if (moon) moon.style.transform = 'translate(150%, -150%) scale(0.2)';
+            setTimeout(() => { if (scene) scene.style.display = 'none'; document.getElementById('final-aries-overlay').style.display = 'flex'; drawAriesLines(); }, 2000);
         }
 
         function drawAriesLines() {
@@ -523,33 +843,48 @@
             c.width = window.innerWidth; c.height = window.innerHeight;
             let progress = 0;
             function animate() {
-                ctx.clearRect(0,0,c.width, c.height); ctx.strokeStyle = 'rgba(197, 160, 89, 0.9)'; ctx.lineWidth = 1; ctx.shadowBlur = 10; ctx.shadowColor = 'var(--gold)'; ctx.beginPath(); ctx.moveTo(ariesStars[0].x * c.width, ariesStars[0].y * c.height);
+                if (activePageIndex !== 4) return;
+                ctx.clearRect(0,0,c.width, c.height); ctx.strokeStyle = 'rgba(255, 240, 200, 0.85)'; ctx.lineWidth = 1.5; ctx.shadowBlur = 15; ctx.shadowColor = 'rgba(255, 240, 200, 1)'; ctx.beginPath(); ctx.moveTo(ariesStars[0].x * c.width, ariesStars[0].y * c.height);
                 for(let i=1; i < ariesStars.length; i++) {
                     const pStart = ariesStars[i-1], pEnd = ariesStars[i]; const segmentProgress = Math.min(1, Math.max(0, progress - (i-1)));
                     const currX = (pStart.x + (pEnd.x - pStart.x) * segmentProgress) * c.width; const currY = (pStart.y + (pEnd.y - pStart.y) * segmentProgress) * c.height;
                     ctx.lineTo(currX, currY); if (segmentProgress < 1) break;
                 }
-                ctx.stroke(); progress += 0.02; if(progress < ariesStars.length) requestAnimationFrame(animate); else { document.getElementById('final-quote').style.opacity = '1'; }
+                ctx.stroke(); progress += 0.02; ariesHighlight = Math.min(1, progress / 1.5); 
+                if(progress < ariesStars.length) { requestAnimationFrame(animate); } 
+                else { 
+                    const q = document.getElementById('final-quote'); if(q) q.style.opacity = '1'; 
+                    setTimeout(() => { const backBtn = document.getElementById('back-to-wishes'); if(backBtn) { backBtn.style.display = 'block'; setTimeout(() => backBtn.style.opacity = '1', 50); } }, 2000);
+                }
             }
             animate();
         }
 
         function resetFromStars() {
             const overlay = document.getElementById('final-aries-overlay'), quote = document.getElementById('final-quote'), backBtn = document.getElementById('back-to-wishes'), stars = document.getElementById('stars-night'), ariesCanvas = document.getElementById('aries-const-canvas'), moon = document.getElementById('moon-element');
-            quote.style.opacity = '0'; backBtn.style.opacity = '0';
-            const ctx = ariesCanvas.getContext('2d'); ctx.clearRect(0,0,ariesCanvas.width, ariesCanvas.height);
-            stars.style.transform = 'scale(1) translate(0, 0)'; ariesCanvas.style.transform = 'scale(1) translate(0, 0)'; moon.style.transform = 'translate(0, 0) scale(1)';
-            setTimeout(() => { overlay.style.display = 'none'; backBtn.style.display = 'none'; startScroller(); }, 2000);
+            if(quote) quote.style.opacity = '0'; if(backBtn) backBtn.style.opacity = '0'; 
+            if(ariesCanvas) ariesCanvas.getContext('2d').clearRect(0,0,ariesCanvas.width, ariesCanvas.height);
+            if(stars) stars.style.transform = 'scale(1) translate(0, 0)'; 
+            if(ariesCanvas) ariesCanvas.style.transform = 'scale(1) translate(0, 0)'; 
+            if(moon) moon.style.transform = 'translate(0, 0) scale(1)';
+            ariesHighlight = 0; 
+            setTimeout(() => { if(overlay) overlay.style.display = 'none'; if(backBtn) backBtn.style.display = 'none'; startScroller(); }, 2000);
         }
 
-        setInterval(() => {
+        function finishCountdown() {
+            if(countdownInterval) clearInterval(countdownInterval);
+            const container = document.getElementById("countdown-container");
+            if(container) { container.innerHTML = `<div style="font-family: 'Dancing Script', cursive; font-size: clamp(3rem, 8vw, 6rem); color: var(--gold); text-shadow: 0 0 20px rgba(197,160,89,0.5);">It's Your Day!</div>`; }
+        }
+
+        countdownInterval = setInterval(() => {
             const diff = new Date("April 13, 2026 00:00:00") - Date.now();
-            if(diff > 0) {
-                document.getElementById("days").innerText = Math.floor(diff/86400000).toString().padStart(2,'0');
-                document.getElementById("hours").innerText = Math.floor((diff%86400000)/3600000).toString().padStart(2,'0');
-                document.getElementById("mins").innerText = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
-                document.getElementById("secs").innerText = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
-            }
+            if(diff > 0 && !adminBypassCountdown) {
+                const days = document.getElementById("days"); if (days) days.innerText = Math.floor(diff/86400000).toString().padStart(2,'0');
+                const hours = document.getElementById("hours"); if (hours) hours.innerText = Math.floor((diff%86400000)/3600000).toString().padStart(2,'0');
+                const mins = document.getElementById("mins"); if (mins) mins.innerText = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
+                const secs = document.getElementById("secs"); if (secs) secs.innerText = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
+            } else if (!adminBypassCountdown) { finishCountdown(); }
         }, 1000);
     </script>
 </body>
