@@ -19,9 +19,6 @@
         body { background-color: var(--bg); color: var(--white); font-family: 'Montserrat', sans-serif; transition: background-color 2.5s cubic-bezier(0.4, 0, 0.2, 1); min-height: 100vh; overflow: hidden; }
         body.allow-scroll { overflow-y: auto; overflow-x: hidden; }
 
-        /* --- Global Canvas for Ambient --- */
-        #ambient-canvas { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
-
         /* --- Lightbox --- */
         #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 30000; display: none; justify-content: center; align-items: center; cursor: zoom-out; opacity: 0; transition: opacity 0.3s; backdrop-filter: blur(5px); }
         #lightbox img { max-width: 90%; max-height: 85vh; border: 8px solid white; border-bottom: 25px solid white; border-radius: 2px; box-shadow: 0 0 40px rgba(0,0,0,0.6); transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -142,17 +139,10 @@
         .night-sky { position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle at 20% 30%, rgba(10, 25, 45, 1) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(15, 20, 35, 1) 0%, transparent 50%), linear-gradient(135deg, #010305 0%, #03080e 50%, #010305 100%); overflow: hidden; }
         
         .moon { 
-            position: absolute; top: 10%; right: 15%; width: 100px; height: 100px; 
-            background-color: #e6e8e3;
-            background-image: 
-                radial-gradient(circle at 30% 30%, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.12) 15%, transparent 20%),
-                radial-gradient(circle at 70% 60%, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.1) 20%, transparent 25%),
-                radial-gradient(circle at 40% 70%, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.12) 10%, transparent 15%),
-                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.8) 0%, transparent 50%);
-            border-radius: 50%; 
-            box-shadow: 0 0 60px rgba(255,255,255,0.4), inset -15px -15px 30px rgba(0,0,0,0.4), inset 10px 10px 20px rgba(255,255,255,0.9); 
-            filter: drop-shadow(0 0 8px white); 
+            position: absolute; top: 10%; right: 15%; width: 96px; height: 96px; 
+            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.4)); 
             transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1); 
+            image-rendering: pixelated;
         }
         
         #wish-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 8vw, 4rem); font-style: italic; color: var(--gold); opacity: 0; transition: 1.5s; margin-bottom: 30px; }
@@ -183,8 +173,6 @@
     </style>
 </head>
 <body>
-
-    <canvas id="ambient-canvas"></canvas>
 
     <!-- Lightbox -->
     <div id="lightbox" onclick="closeLightbox()">
@@ -277,7 +265,7 @@
     <!-- Surprise Page -->
     <div id="page-surprise">
         <div class="night-sky">
-            <div class="moon" id="moon-element"></div>
+            <canvas class="moon" id="moon-element" width="96" height="96"></canvas>
             <canvas id="stars-night"></canvas>
             <canvas id="aries-const-canvas"></canvas>
         </div>
@@ -339,59 +327,6 @@
         const fwCtx = fwCanvas.getContext('2d');
         const bgFwCanvas = document.getElementById('bg-fireworks-canvas');
         const bgFwCtx = bgFwCanvas.getContext('2d');
-
-        /* --- Ambient Fireflies Logic --- */
-        let fireflies = [];
-        let ambientCanvas, ambientCtx;
-
-        function initFireflies() {
-            ambientCanvas = document.getElementById('ambient-canvas');
-            if(!ambientCanvas) return;
-            ambientCtx = ambientCanvas.getContext('2d');
-            ambientCanvas.width = window.innerWidth;
-            ambientCanvas.height = window.innerHeight;
-            fireflies = Array(20).fill().map(() => ({
-                x: Math.random() * ambientCanvas.width,
-                y: Math.random() * ambientCanvas.height,
-                s: Math.random() * 1.5 + 1,
-                a: Math.random() * Math.PI * 2,
-                o: Math.random(),
-                v: Math.random() * 0.01 + 0.005,
-                speed: Math.random() * 0.15 + 0.05
-            }));
-        }
-
-        function drawFireflies() {
-            if(!ambientCtx) return;
-            ambientCtx.clearRect(0, 0, ambientCanvas.width, ambientCanvas.height);
-            if(ambientCanvas.width !== window.innerWidth) ambientCanvas.width = window.innerWidth;
-            if(ambientCanvas.height !== window.innerHeight) ambientCanvas.height = window.innerHeight;
-
-            fireflies.forEach(f => {
-                f.x += Math.cos(f.a) * f.speed;
-                f.y += Math.sin(f.a) * f.speed;
-                f.a += Math.random() * 0.1 - 0.05;
-                if(f.x < 0 || f.x > ambientCanvas.width) f.a = Math.PI - f.a;
-                if(f.y < 0 || f.y > ambientCanvas.height) f.a = -f.a;
-
-                f.o += f.v;
-                if(f.o > 1 || f.o < 0) f.v = -f.v;
-
-                ambientCtx.beginPath();
-                const grad = ambientCtx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.s * 3);
-                grad.addColorStop(0, `rgba(255, 240, 150, ${Math.max(0, f.o)})`);
-                grad.addColorStop(1, 'rgba(255, 200, 50, 0)');
-                ambientCtx.fillStyle = grad;
-                ambientCtx.arc(f.x, f.y, f.s * 3, 0, Math.PI * 2);
-                ambientCtx.fill();
-            });
-            requestAnimationFrame(drawFireflies);
-        }
-
-        window.addEventListener('load', () => {
-            initFireflies();
-            drawFireflies();
-        });
 
         function openLightbox(src) {
             const lb = document.getElementById('lightbox');
@@ -511,7 +446,6 @@
                 } else if (targetId === 'page-celebration') {
                     document.body.classList.add('allow-scroll');
                     initHeart(); startObservers();
-                    window.balloonInt = setInterval(() => createBalloon('bg'), 2000);
                 } else if (targetId === 'page-surprise') {
                     document.body.classList.remove('allow-scroll');
                     goToNightScene();
@@ -587,7 +521,6 @@
                     celeb.style.display = 'block'; 
                     celeb.style.opacity = '1'; 
                     initHeart(); startObservers(); clearAllIntervals();
-                    window.balloonInt = setInterval(() => createBalloon('bg'), 2000);
                 }, 2000);
             }, 1000);
         }
@@ -650,7 +583,51 @@
             activePageIndex = 4;
             document.getElementById('page-celebration').style.opacity = '0';
             clearAllIntervals();
-            setTimeout(() => { window.scrollTo(0,0); document.body.classList.remove('allow-scroll'); const p = document.getElementById('page-surprise'); p.style.display = 'flex'; p.style.opacity = '1'; initNightStars(); setTimeout(initShootingStarSequence, 1500); }, 1000);
+            setTimeout(() => { window.scrollTo(0,0); document.body.classList.remove('allow-scroll'); const p = document.getElementById('page-surprise'); p.style.display = 'flex'; p.style.opacity = '1'; drawPixelMoon(); initNightStars(); setTimeout(initShootingStarSequence, 1500); }, 1000);
+        }
+
+        function drawPixelMoon() {
+            const canvas = document.getElementById('moon-element');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const pixelSize = canvas.width / 24;
+            const colors = { 'L': '#fff4a3', 'M': '#ffd700', 'D': '#ffaa00' };
+            const moonArt = [
+                "                        ",
+                "            LLLM        ",
+                "          LLMMMMD       ",
+                "         LLMMMMMD       ",
+                "        LLMMMMDD        ",
+                "       LLMMMMD          ",
+                "      LLMMMMD           ",
+                "      LLMMMD            ",
+                "     LLMMMD             ",
+                "     LLMMMD             ",
+                "     LMMMMD             ",
+                "     LMMMMD             ",
+                "     LMMMMD             ",
+                "     LLMMMD             ",
+                "     LLMMMMD            ",
+                "      LLMMMMD           ",
+                "      LLLMMMMD          ",
+                "       LLLMMMMDD        ",
+                "        LLLMMMMMD       ",
+                "          LLLMMMMD      ",
+                "            LLLLMD      ",
+                "                        ",
+                "                        ",
+                "                        "
+            ];
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            for(let y=0; y<24; y++) {
+                for(let x=0; x<24; x++) {
+                    const char = moonArt[y][x];
+                    if(colors[char]) {
+                        ctx.fillStyle = colors[char];
+                        ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+                    }
+                }
+            }
         }
 
         function initNightStars() {
@@ -713,7 +690,6 @@
             requestAnimationFrame(animateBGFireworks);
         }
 
-        // BINTANG JATUH (SHOOTING STAR) PERBAIKAN TOTAL TANPA SYNTAX ERROR
         function initShootingStarSequence() {
             const c = document.getElementById('shooting-star-canvas'); if(!c) return; const ctx = c.getContext('2d');
             c.width = window.innerWidth; c.height = window.innerHeight;
@@ -721,14 +697,17 @@
             let particles = [];
             let starPath = [];
             let clingAlpha = 0;
+            let clingTriggered = false;
             
             function animate() { 
                 if ((activePageIndex !== 4 || !ssActive) && particles.length === 0 && clingAlpha <= 0) return;
                 ctx.clearRect(0,0,c.width, c.height); 
                 
                 if (ssActive) {
-                    ssX -= 15; 
-                    ssY += 12 + Math.sin(ssX / 100) * 4; 
+                    const vx = -10; 
+                    const vy = 8; 
+                    ssX += vx; 
+                    ssY += vy;
                     
                     starPath.push({x: ssX, y: ssY});
                     if(starPath.length > 25) starPath.shift();
@@ -747,8 +726,9 @@
                         ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.stroke(); 
                     }
                     
-                    if (Math.abs(ssX - c.width/2) < 20 && clingAlpha === 0) {
+                    if (ssX <= c.width / 2 && clingAlpha === 0 && !clingTriggered) {
                         clingAlpha = 1;
+                        clingTriggered = true;
                     }
 
                     if (clingAlpha > 0) {
@@ -757,7 +737,7 @@
                         ctx.translate(ssX, ssY);
                         ctx.rotate(Math.PI/4);
                         ctx.strokeStyle = `rgba(255, 255, 255, ${clingAlpha})`;
-                        ctx.lineWidth = 2;
+                        ctx.lineWidth = 3;
                         ctx.beginPath();
                         ctx.moveTo(-shineLen, 0); ctx.lineTo(shineLen, 0);
                         ctx.moveTo(0, -shineLen); ctx.lineTo(0, shineLen);
@@ -773,11 +753,11 @@
 
                     ctx.beginPath(); ctx.arc(ssX, ssY, 6, 0, Math.PI * 2); ctx.fillStyle = 'white'; ctx.shadowBlur = 30; ctx.shadowColor = 'white'; ctx.fill(); ctx.shadowBlur = 0;
                     
-                    if (Math.random() > 0.25) {
+                    if (Math.random() > 0.2) {
                         particles.push({ 
                             x: ssX, y: ssY, 
-                            vx: (Math.random() - 0.5) * 5, vy: (Math.random() - 0.5) * 5, 
-                            life: 1, decay: Math.random() * 0.02 + 0.02, size: Math.random() * 3 + 1 
+                            vx: (Math.random() - 0.5) * 4, vy: (Math.random() - 0.5) * 4, 
+                            life: 1, decay: Math.random() * 0.02 + 0.015, size: Math.random() * 3 + 1 
                         });
                     }
                     
