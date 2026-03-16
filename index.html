@@ -19,6 +19,9 @@
         body { background-color: var(--bg); color: var(--white); font-family: 'Montserrat', sans-serif; transition: background-color 2.5s cubic-bezier(0.4, 0, 0.2, 1); min-height: 100vh; overflow: hidden; }
         body.allow-scroll { overflow-y: auto; overflow-x: hidden; }
 
+        /* --- Global Canvas for Ambient --- */
+        #ambient-canvas { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
+
         /* --- Lightbox --- */
         #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 30000; display: none; justify-content: center; align-items: center; cursor: zoom-out; opacity: 0; transition: opacity 0.3s; backdrop-filter: blur(5px); }
         #lightbox img { max-width: 90%; max-height: 85vh; border: 8px solid white; border-bottom: 25px solid white; border-radius: 2px; box-shadow: 0 0 40px rgba(0,0,0,0.6); transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -89,12 +92,12 @@
         .ray { position: absolute; top: -50%; left: 50%; width: 300%; height: 200%; background: repeating-linear-gradient(95deg, transparent 0%, transparent 5%, var(--sun-ray) 7%, transparent 10%, transparent 12%, var(--sun-ray) 15%); transform-origin: center top; animation: raysRotate 25s infinite linear; filter: blur(20px); }
         @keyframes raysRotate { 0% { transform: translateX(-50%) rotate(0deg); } 100% { transform: translateX(-50%) rotate(15deg); } }
 
-        .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 10vw, 6.5rem); font-style: italic; margin-bottom: 20px; color: var(--white); }
-        .countdown { display: flex; gap: clamp(10px, 3vw, 25px); margin-bottom: clamp(30px, 8vh, 60px); }
+        .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 10vw, 6.5rem); font-style: italic; margin-bottom: 20px; color: var(--white); position: relative; z-index: 2; }
+        .countdown { display: flex; gap: clamp(10px, 3vw, 25px); margin-bottom: clamp(30px, 8vh, 60px); position: relative; z-index: 2; }
         .count-item span:first-child { font-size: clamp(2rem, 7vw, 4rem); color: var(--gold-light); display: block; font-family: 'Cormorant Garamond', serif; font-weight: 600; }
         .count-item span:last-child { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); }
         
-        .next-btn { background: transparent; color: var(--gold); border: 1px solid var(--gold); padding: 18px 50px; border-radius: 100px; cursor: pointer; text-transform: uppercase; letter-spacing: 4px; font-size: 0.75rem; transition: 0.5s; z-index: 20; }
+        .next-btn { background: transparent; color: var(--gold); border: 1px solid var(--gold); padding: 18px 50px; border-radius: 100px; cursor: pointer; text-transform: uppercase; letter-spacing: 4px; font-size: 0.75rem; transition: 0.5s; z-index: 20; position: relative; }
         .next-btn:hover { background: var(--gold); color: white; box-shadow: 0 0 30px rgba(197, 160, 89, 0.4); }
 
         /* --- Login Modal --- */
@@ -181,6 +184,8 @@
 </head>
 <body>
 
+    <canvas id="ambient-canvas"></canvas>
+
     <!-- Lightbox -->
     <div id="lightbox" onclick="closeLightbox()">
         <img id="lightbox-img" src="" alt="Memory">
@@ -252,9 +257,12 @@
         </div>
         <div class="message-box" id="trigger-box">
             <div id="private-content">
-                <div id="romantic-message">
+                <div id="romantic-message" style="text-align: center;">
                     <p style="font-family: 'Cormorant Garamond'; font-style: italic; font-size: 1.8rem; font-weight: 600;">"Maybe I’m not the best boyfriend, but you are truly the best girlfriend."</p>
-                    <p style="color: var(--gold); margin: 20px 0; font-family: 'Noto Sans SC'; letter-spacing: 2px;">“也许我 bukan pacar terbaik, tapi kamu benar-benar pacar terbaik.”</p>
+                    <div style="margin: 20px 0;">
+                        <p style="color: var(--gold); font-family: 'Noto Sans SC'; letter-spacing: 2px; font-size: 1.5rem; margin-bottom: 5px;">“你是最好的女朋友。”</p>
+                        <p style="color: var(--gold); opacity: 0.4; font-size: 0.9rem; font-style: italic; letter-spacing: 1px;">nǐ shì zuì hǎo de nǚ péngyǒu</p>
+                    </div>
                     <div class="personal-note"><span id="typewriter-display"></span><span id="typewriter-cursor"></span></div>
                 </div>
                 <div id="generic-message" style="display:none; padding: 40px 0;">
@@ -323,7 +331,7 @@
 
         const pageFlow = ['page-landing', 'login-overlay', 'game-session', 'page-celebration', 'page-surprise'];
         const colors = ['#FF5E5E', '#FFD700', '#FF7ED4', '#70FF8B', '#70D1FF', '#FF9F43'];
-        const photos = ['https://i.postimg.cc/Q9t6F51F/image.jpg', 'https://i.postimg.cc/YG9XvgYL/image.jpg', 'https://i.postimg.cc/sQXnMS77/image.jpg', 'https://i.postimg.cc/mzDdPMC7/image.jpg', 'https://i.postimg.cc/G82M4YGJ/image.jpg', 'https://i.postimg.cc/gXJMxR8H/image.jpg', 'https://i.postimg.cc/0rmDqsWQ/image.jpg', 'https://i.postimg.cc/5jvLMV7t/image.jpg', 'https://i.postimg.cc/TyTNXBPc/image.jpg', 'https://i.postimg.cc/XZxHNxZm/image.jpg', 'https://i.postimg.cc/qtQbBQtD/image.jpg', 'https://i.postimg.cc/QBS4NSBP/image.jpg', 'https://i.postimg.cc/SXVTQVXv/image.jpg', 'https://i.postimg.cc/KKQqcQkS/image.jpg', 'https://i.postimg.cc/67zj6z2X/image.jpg', 'https://i.postimg.cc/4KwL4w7R/image.jpg', 'https://i.postimg.cc/2qTcjTbm/image.jpg', 'https://i.postimg.cc/QBS4NS9x/image.jpg', 'https://i.postimg.cc/KkH0BzDM/image.jpg', 'https://i.postimg.cc/3y9Sr94r/image.jpg', 'https://i.postimg.cc/8FwKkwJC/image.jpg', 'https://i.postimg.cc/JyK67KD0/image.jpg', 'https://i.postimg.cc/LYXyJfL2/image.jpg', 'https://i.postimg.cc/S2sZn8Cm/image.jpg', 'https://i.postimg.cc/WF39drgt/image.jpg', 'https://i.postimg.cc/47d8YtVK/image.jpg', 'https://i.postimg.cc/R6DgKFL7/image.jpg', 'https://i.postimg.cc/dkx5r1jT/image.jpg', 'https://i.postimg.cc/7GWK06ng/image.jpg', 'https://i.postimg.cc/23vhfDcm/image.jpg', 'https://i.postimg.cc/BLVmH6Bp/image.jpg', 'https://i.postimg.cc/Hch6Xx93/image.jpg'];
+        const photos = ['https://i.postimg.cc/Q9t6F51F/image.jpg', 'https://i.postimg.cc/YG9XvgYL/image.jpg', 'https://i.postimg.cc/sQXnMS77/image.jpg', 'https://i.postimg.cc/mzDdPMC7/image.jpg', 'https://i.postimg.cc/G82M4YGJ/image.jpg', 'https://i.postimg.cc/gXJMxR8H/image.jpg', 'https://i.postimg.cc/0rmDqsWQ/image.jpg', 'https://i.postimg.cc/5jvLMV7t/image.jpg', 'https://i.postimg.cc/TyTNXBPc/image.jpg', 'https://i.postimg.cc/XZxHNxZm/image.jpg', 'https://i.postimg.cc/qtQbBQtD/image.jpg', 'https://i.postimg.cc/QBS4NSBP/image.jpg', 'https://i.postimg.cc/SXVTQVXv/image.jpg', 'https://i.postimg.cc/KKQqcQkS/image.jpg', 'https://i.postimg.cc/67zj6z2X/image.jpg', 'https://i.postimg.cc/4KwL4w7R/image.jpg', 'https://i.postimg.cc/2qTcjTbm/image.jpg', 'https://i.postimg.cc/QBS4NS9x/image.jpg', 'https://i.postimg.cc/KkH0BzDM/image.jpg', 'https://i.postimg.cc/3y9Sr94r/image.jpg', 'https://i.postimg.cc/8FwKkwJC/image.jpg', 'https://i.postimg.cc/JyK67KD0/image.jpg', 'https://i.postimg.cc/LYXyJfL2/image.jpg', 'https://i.postimg.cc/S2sZn8Cm/image.jpg', 'https://i.postimg.cc/WF39drgt/image.jpg', 'https://i.postimg.cc/47d8YtVK/image.jpg', 'https://i.postimg.cc/R6DgKFL7/image.jpg', 'https://i.postimg.cc/dkx5r1jT/image.jpg', 'https://i.postimg.cc/7GWK06ng/image.jpg', 'https://i.postimg.cc/KkH0BzDN/image.jpg', 'https://i.postimg.cc/23vhfDcm/image.jpg', 'https://i.postimg.cc/BLVmH6Bp/image.jpg', 'https://i.postimg.cc/Hch6Xx93/image.jpg'];
         const fullText = "Halooo Lemon, sekarang kamu udah umur 20 lohh, gak berasa yaa waktu udah bawa kamu ke umur yang sekarang, dan mungkin kamu gak nyangka juga bisa ketemu aku di tengah-tengah perjalanan kamu. \n\nHappyy birthdayy yaaa My Deer Lemonn, mungkin aku bukan pacar yang terbaik, tapii kamuu yangg merupakan pacar terbaik buatt aku. Aku berdoa untuk kesehatan kamu, perlindungan buat kamu, berkat melimpah, umur yang panjang, dan masa depan yang Indah buat kamu Leyonn (terutama di Beauty Industry).\n\nMaaff jugaa yaa kalau aku engga bisa kasih kamu hadiah yangg mungkin kamu inginkan. Tapi aku harap kamu suka hadiah yangg akan aku kasih ke kamu Lemonn.\n\nSekali lagii happyy birthdayyy yaaa Lemonnn, My Deer Lemonnn. I Lovee Youu Leonita Kumala Dewi, our love will be forever.";
         const ariesStars = [{x: 0.50, y: 0.40, r: 4}, {x: 0.58, y: 0.47, r: 3}, {x: 0.63, y: 0.60, r: 2}, {x: 0.73, y: 0.70, r: 2.5}];
 
@@ -331,6 +339,59 @@
         const fwCtx = fwCanvas.getContext('2d');
         const bgFwCanvas = document.getElementById('bg-fireworks-canvas');
         const bgFwCtx = bgFwCanvas.getContext('2d');
+
+        /* --- Ambient Fireflies Logic --- */
+        let fireflies = [];
+        let ambientCanvas, ambientCtx;
+
+        function initFireflies() {
+            ambientCanvas = document.getElementById('ambient-canvas');
+            if(!ambientCanvas) return;
+            ambientCtx = ambientCanvas.getContext('2d');
+            ambientCanvas.width = window.innerWidth;
+            ambientCanvas.height = window.innerHeight;
+            fireflies = Array(20).fill().map(() => ({
+                x: Math.random() * ambientCanvas.width,
+                y: Math.random() * ambientCanvas.height,
+                s: Math.random() * 1.5 + 1,
+                a: Math.random() * Math.PI * 2,
+                o: Math.random(),
+                v: Math.random() * 0.01 + 0.005,
+                speed: Math.random() * 0.15 + 0.05
+            }));
+        }
+
+        function drawFireflies() {
+            if(!ambientCtx) return;
+            ambientCtx.clearRect(0, 0, ambientCanvas.width, ambientCanvas.height);
+            if(ambientCanvas.width !== window.innerWidth) ambientCanvas.width = window.innerWidth;
+            if(ambientCanvas.height !== window.innerHeight) ambientCanvas.height = window.innerHeight;
+
+            fireflies.forEach(f => {
+                f.x += Math.cos(f.a) * f.speed;
+                f.y += Math.sin(f.a) * f.speed;
+                f.a += Math.random() * 0.1 - 0.05;
+                if(f.x < 0 || f.x > ambientCanvas.width) f.a = Math.PI - f.a;
+                if(f.y < 0 || f.y > ambientCanvas.height) f.a = -f.a;
+
+                f.o += f.v;
+                if(f.o > 1 || f.o < 0) f.v = -f.v;
+
+                ambientCtx.beginPath();
+                const grad = ambientCtx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.s * 3);
+                grad.addColorStop(0, `rgba(255, 240, 150, ${Math.max(0, f.o)})`);
+                grad.addColorStop(1, 'rgba(255, 200, 50, 0)');
+                ambientCtx.fillStyle = grad;
+                ambientCtx.arc(f.x, f.y, f.s * 3, 0, Math.PI * 2);
+                ambientCtx.fill();
+            });
+            requestAnimationFrame(drawFireflies);
+        }
+
+        window.addEventListener('load', () => {
+            initFireflies();
+            drawFireflies();
+        });
 
         function openLightbox(src) {
             const lb = document.getElementById('lightbox');
@@ -568,7 +629,8 @@
                     }
                 } 
             }, { threshold: 0.5 });
-            twObserver.observe(document.getElementById('trigger-box'));
+            const trigger = document.getElementById('trigger-box');
+            if(trigger) twObserver.observe(trigger);
         }
 
         function typeWriter(i) {
@@ -577,8 +639,10 @@
                 d.textContent += fullText.charAt(i); 
                 twTimeout = setTimeout(() => typeWriter(i + 1), 25); 
             } else if (d) { 
-                document.getElementById('typewriter-cursor').style.display = 'none'; 
-                document.getElementById('final-wish-btn').style.display = 'inline-block'; 
+                const cur = document.getElementById('typewriter-cursor');
+                if(cur) cur.style.display = 'none'; 
+                const btn = document.getElementById('final-wish-btn');
+                if(btn) btn.style.display = 'inline-block'; 
             }
         }
 
@@ -649,80 +713,85 @@
             requestAnimationFrame(animateBGFireworks);
         }
 
-        // BINTANG JATUH (SHOOTING STAR) PERBAIKAN ARAH EKOR
+        // BINTANG JATUH (SHOOTING STAR) PERBAIKAN TOTAL TANPA SYNTAX ERROR
         function initShootingStarSequence() {
             const c = document.getElementById('shooting-star-canvas'); if(!c) return; const ctx = c.getContext('2d');
             c.width = window.innerWidth; c.height = window.innerHeight;
             let ssX = c.width + 100, ssY = -100, ssActive = true;
             let particles = [];
-            let starPath = []; // Untuk melacak posisi sebelumnya agar ekor selaras
+            let starPath = [];
+            let clingAlpha = 0;
             
             function animate() { 
-                if ((activePageIndex !== 4 || !ssActive) && particles.length === 0) return;
+                if ((activePageIndex !== 4 || !ssActive) && particles.length === 0 && clingAlpha <= 0) return;
                 ctx.clearRect(0,0,c.width, c.height); 
                 
                 if (ssActive) {
-                    // Update posisi dengan lengkungan halus
-                    const vx = -15;
-                    const vy = 10 + Math.cos(ssX/150)*3;
-                    ssX += vx; 
-                    ssY += vy;
+                    ssX -= 15; 
+                    ssY += 12 + Math.sin(ssX / 100) * 4; 
                     
                     starPath.push({x: ssX, y: ssY});
-                    if(starPath.length > 20) starPath.shift();
+                    if(starPath.length > 25) starPath.shift();
 
-                    // Gambar Ekor (Trail) yang selaras dengan path gerakan
                     if(starPath.length > 1) {
-                        const g = ctx.createLinearGradient(ssX, ssY, starPath[0].x, starPath[0].y);
-                        g.addColorStop(0, 'rgba(255, 255, 255, 1)'); 
-                        g.addColorStop(0.2, 'rgba(255, 230, 150, 0.8)'); 
-                        g.addColorStop(1, 'rgba(255, 255, 255, 0)'); 
-                        
-                        ctx.strokeStyle = g; 
-                        ctx.lineWidth = 4; 
-                        ctx.lineCap = 'round';
-                        ctx.beginPath(); 
-                        ctx.moveTo(ssX, ssY); 
+                        ctx.beginPath();
+                        ctx.moveTo(starPath[starPath.length-1].x, starPath[starPath.length-1].y);
                         for(let i = starPath.length - 2; i >= 0; i--) {
                             ctx.lineTo(starPath[i].x, starPath[i].y);
                         }
-                        ctx.stroke(); 
+                        const g = ctx.createLinearGradient(ssX, ssY, starPath[0].x, starPath[0].y);
+                        g.addColorStop(0, 'rgba(255, 255, 255, 1)'); 
+                        g.addColorStop(0.3, 'rgba(255, 230, 150, 0.6)'); 
+                        g.addColorStop(1, 'rgba(255, 255, 255, 0)'); 
+                        ctx.strokeStyle = g; 
+                        ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.stroke(); 
                     }
                     
-                    // Star Core Glow
-                    ctx.beginPath();
-                    ctx.arc(ssX, ssY, 5, 0, Math.PI * 2);
-                    ctx.fillStyle = 'white';
-                    ctx.shadowBlur = 25;
-                    ctx.shadowColor = 'white';
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-
-                    // Stardust sparkles
-                    if (Math.random() > 0.3) {
-                        particles.push({
-                            x: ssX, y: ssY,
-                            vx: (Math.random() - 0.5) * 4, 
-                            vy: (Math.random() - 0.5) * 4,
-                            life: 1, 
-                            decay: Math.random() * 0.03 + 0.02,
-                            size: Math.random() * 2 + 1
-                        });
+                    if (Math.abs(ssX - c.width/2) < 20 && clingAlpha === 0) {
+                        clingAlpha = 1;
                     }
 
-                    if(ssX < -600) { ssActive = false; showWishUI(); }
-                }
+                    if (clingAlpha > 0) {
+                        const shineLen = 150 * clingAlpha;
+                        ctx.save();
+                        ctx.translate(ssX, ssY);
+                        ctx.rotate(Math.PI/4);
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${clingAlpha})`;
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(-shineLen, 0); ctx.lineTo(shineLen, 0);
+                        ctx.moveTo(0, -shineLen); ctx.lineTo(0, shineLen);
+                        ctx.stroke();
+                        ctx.rotate(-Math.PI/4);
+                        ctx.beginPath();
+                        ctx.moveTo(-shineLen*1.5, 0); ctx.lineTo(shineLen*1.5, 0);
+                        ctx.moveTo(0, -shineLen*1.5); ctx.lineTo(0, shineLen*1.5);
+                        ctx.stroke();
+                        ctx.restore();
+                        clingAlpha -= 0.05;
+                    }
 
-                // Render sparkles
+                    ctx.beginPath(); ctx.arc(ssX, ssY, 6, 0, Math.PI * 2); ctx.fillStyle = 'white'; ctx.shadowBlur = 30; ctx.shadowColor = 'white'; ctx.fill(); ctx.shadowBlur = 0;
+                    
+                    if (Math.random() > 0.25) {
+                        particles.push({ 
+                            x: ssX, y: ssY, 
+                            vx: (Math.random() - 0.5) * 5, vy: (Math.random() - 0.5) * 5, 
+                            life: 1, decay: Math.random() * 0.02 + 0.02, size: Math.random() * 3 + 1 
+                        });
+                    }
+                    
+                    if(ssX < -600) { ssActive = false; showWishUI(); } 
+                }
+                
                 for (let i = particles.length - 1; i >= 0; i--) {
                     let p = particles[i];
                     p.x += p.vx; p.y += p.vy; p.life -= p.decay;
-                    if (p.life <= 0) {
-                        particles.splice(i, 1);
-                    } else {
+                    if (p.life <= 0) { particles.splice(i, 1); } 
+                    else {
                         ctx.beginPath();
                         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                        ctx.fillStyle = `rgba(255, 245, 200, ${p.life})`;
+                        ctx.fillStyle = `rgba(255, 250, 210, ${p.life})`;
                         ctx.fill();
                     }
                 }
@@ -732,8 +801,12 @@
         }
 
         function showWishUI() {
-            document.getElementById('wish-title').style.opacity = '1';
-            setTimeout(() => { const b = document.getElementById('done-btn'); if(b) { b.style.display = 'inline-block'; setTimeout(() => b.style.opacity = '1', 50); } }, 1500);
+            const wt = document.getElementById('wish-title');
+            if (wt) wt.style.opacity = '1';
+            setTimeout(() => { 
+                const b = document.getElementById('done-btn'); 
+                if(b) { b.style.display = 'inline-block'; setTimeout(() => b.style.opacity = '1', 50); } 
+            }, 1500);
         }
 
         function handleDoneWish() {
@@ -880,10 +953,11 @@
         countdownInterval = setInterval(() => {
             const diff = new Date("April 13, 2026 00:00:00") - Date.now();
             if(diff > 0 && !adminBypassCountdown) {
-                const days = document.getElementById("days"); if (days) days.innerText = Math.floor(diff/86400000).toString().padStart(2,'0');
-                const hours = document.getElementById("hours"); if (hours) hours.innerText = Math.floor((diff%86400000)/3600000).toString().padStart(2,'0');
-                const mins = document.getElementById("mins"); if (mins) mins.innerText = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
-                const secs = document.getElementById("secs"); if (secs) secs.innerText = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
+                const ds = document.getElementById("days"), hs = document.getElementById("hours"), ms = document.getElementById("mins"), ss = document.getElementById("secs");
+                if(ds) ds.innerText = Math.floor(diff/86400000).toString().padStart(2,'0');
+                if(hs) hs.innerText = Math.floor((diff%86400000)/3600000).toString().padStart(2,'0');
+                if(ms) ms.innerText = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
+                if(ss) ss.innerText = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
             } else if (!adminBypassCountdown) { finishCountdown(); }
         }, 1000);
     </script>
