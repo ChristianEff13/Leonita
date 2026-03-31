@@ -485,7 +485,7 @@
             // BACKGROUND PARK (Mountains)
             for (let i = 2000; i <= 4000; i += 300) {
                 let mH = 1500; // Ekstra panjang ke bawah agar akar tidak terlihat melayang
-                let mGeo = new THREE.ConeGeometry(300 + Math.random()*200, mH, 8);
+                let mGeo = new THREE.ConeGeometry(800 + Math.random()*400, mH, 8); // Lebar base ditambah agar tidak seperti duri
                 let mMat = new THREE.MeshStandardMaterial({color: 0x27ae60, flatShading: true, roughness: 1});
                 let m = new THREE.Mesh(mGeo, mMat);
                 let peakHeight = 50 + Math.random() * 250;
