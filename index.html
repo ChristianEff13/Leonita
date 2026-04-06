@@ -12,7 +12,6 @@
             --bg-night: #010305;
             --gold: #c5a059; --gold-light: #e5c986;
             --white: #ffffff;
-            /* Dikembalikan ke 0.03 agar tidak menumpuk menjadi layar abu-abu */
             --sun-ray: rgba(255, 255, 255, 0.03);
         }
 
@@ -140,26 +139,25 @@
         .moon { 
             position: absolute; top: 10%; right: 15%; width: 90px; height: auto; 
             filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.4)); 
-            transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1), filter 0.5s ease; 
+            transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1), filter 2s ease; 
             image-rendering: auto;
-            z-index: 20000;
+            z-index: 99999; /* LAPISAN TERTINGGI MUTLAK AGAR TIDAK TERHALANG */
             pointer-events: none;
         }
         .moon.glow-active { 
             cursor: pointer; 
-            pointer-events: auto; 
-            animation: moonGlow 2s infinite alternate ease-in-out; 
+            pointer-events: auto !important; 
+            animation: moonGlow 2.5s infinite alternate ease-in-out; 
         }
         @keyframes moonGlow { 
-            0% { filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.4)); } 
-            100% { filter: drop-shadow(0 0 60px rgba(255, 240, 100, 1)); } 
+            0% { filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6)) brightness(1.1); } 
+            100% { filter: drop-shadow(0 0 50px rgba(255, 240, 100, 1)) brightness(1.3); } 
         }
         
         #wish-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 8vw, 4rem); font-style: italic; color: var(--gold); opacity: 0; transition: 1.5s; margin-bottom: 30px; }
         
         #bg-fireworks-canvas { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
         #shooting-star-canvas { position: absolute; inset: 0; z-index: 20500; pointer-events: none; }
-        /* Teks Kembang Api diubah z-index nya agar MUNCUL DI ATAS BULAN (21000 > 20000) */
         #firework-text-canvas { position: absolute; inset: 0; z-index: 21000; pointer-events: none; }
         #stars-night { position: absolute; inset: 0; z-index: 2; transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; pointer-events: none; }
 
@@ -170,17 +168,25 @@
         .wish-item h3 { color: var(--gold); font-family: 'Cormorant Garamond'; font-size: 1.8rem; margin-bottom: 10px; }
         .wish-item p { color: #ccc; font-weight: 300; line-height: 1.8; font-size: 1.1rem; }
         
-        #final-aries-overlay { position: fixed; inset: 0; z-index: 15000; display: none; flex-direction: column; justify-content: center; align-items: center; background: transparent; text-align: center; padding: 40px; pointer-events: none; }
+        #final-aries-overlay { position: fixed; inset: 0; z-index: 15000; display: none; flex-direction: column; justify-content: center; align-items: center; background: transparent; text-align: center; padding: 40px; pointer-events: none; width: 100%; height: 100%; }
         .aries-quote { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.4rem, 4vw, 2.5rem); font-style: italic; color: var(--white); opacity: 0; transition: opacity 3s ease; line-height: 1.6; max-width: 900px; text-shadow: 0 0 20px rgba(197, 160, 89, 0.5); margin-top: 50px; }
         #aries-const-canvas { position: absolute; inset: 0; z-index: 1; pointer-events: none; transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
 
-        #back-to-wishes { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 26000; display: none; opacity: 0; transition: 1s; pointer-events: auto; }
+        #back-to-wishes { position: fixed; bottom: 10vh; left: 50%; transform: translateX(-50%); z-index: 26000; display: none; opacity: 0; transition: 1s; pointer-events: auto; padding: 15px 35px; font-size: 1rem; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); width: max-content; background: rgba(3, 8, 10, 0.8); color: var(--gold); border: 1px solid var(--gold); }
+        #back-to-wishes:hover { background: var(--gold); color: white; }
 
         #balloon-container { position: fixed; inset: 0; pointer-events: none; z-index: 9000; }
         .balloon-wrapper { position: absolute; pointer-events: auto; cursor: pointer; display: flex; flex-direction: column; align-items: center; z-index: 9500; }
         .balloon { width: 75px; height: 95px; border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%; position: relative; box-shadow: inset -6px -12px 18px rgba(0,0,0,0.2), 0 12px 25px rgba(0,0,0,0.15); }
         .balloon::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 12px solid; border-top-color: inherit; }
         .string-svg { width: 30px; height: 80px; margin-top: -3px; opacity: 0.6; }
+
+        /* --- Penyesuaian Mobile --- */
+        @media (max-width: 768px) {
+            .message-box { padding: 30px 20px; margin-top: 40px; width: 90%; }
+            #back-to-wishes { bottom: 12vh; padding: 20px 40px; font-size: 1.2rem; }
+            .moon { right: 5%; top: 5%; }
+        }
     </style>
 </head>
 <body>
@@ -298,7 +304,7 @@
                 “April 13, 2006 was not just a date; it was the beginning of a beautiful story written by a girl who would grow to inspire hearts around her.”
             </div>
         </div>
-        <button id="back-to-wishes" class="next-btn" style="border-radius: 5px; padding: 10px 20px; font-size: 0.6rem;" onclick="resetFromStars()">Back to Wishes</button>
+        <button id="back-to-wishes" class="next-btn" onclick="resetFromStars()">Back to Wishes</button>
     </div>
 
     <div id="balloon-container"></div>
@@ -349,7 +355,7 @@
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(400, audioCtx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
-                // Volume dikecilkan menjadi sangat halus
+                // Volume sangat halus
                 gain.gain.setValueAtTime(0.03, audioCtx.currentTime); 
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
                 osc.start();
@@ -362,10 +368,10 @@
             if (!audioCtx) return;
             try {
                 const now = Date.now();
-                if (now - lastFwTime < 150) return; // Mencegah penumpukan suara yang berlebihan
+                if (now - lastFwTime < 150) return; 
                 lastFwTime = now;
                 
-                const dur = 0.5 + Math.random() * 0.3; // Variasi durasi
+                const dur = 0.5 + Math.random() * 0.3; 
                 const bufferSize = audioCtx.sampleRate * dur;
                 const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
                 const data = buffer.getChannelData(0);
@@ -377,13 +383,13 @@
                 
                 const filter = audioCtx.createBiquadFilter();
                 filter.type = 'lowpass';
-                filter.frequency.value = 250 + Math.random() * 200; // Variasi frekuensi (muffled)
+                filter.frequency.value = 250 + Math.random() * 200; 
                 
                 const gain = audioCtx.createGain();
                 gain.gain.setValueAtTime(0, audioCtx.currentTime); 
-                // Volume sangat kecil dan halus (max 0.015)
-                gain.gain.linearRampToValueAtTime(0.01 + Math.random() * 0.005, audioCtx.currentTime + 0.05); 
-                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+                // Volume dikecilkan menjadi sangat halus
+                gain.gain.linearRampToValueAtTime(0.005 + Math.random() * 0.003, audioCtx.currentTime + 0.05); 
+                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + dur);
                 
                 noise.connect(filter);
                 filter.connect(gain);
@@ -455,9 +461,15 @@
         initLandingParticles();
         animateLandingParticles();
 
-        window.addEventListener('resize', () => { if (activePageIndex === 0) initLandingParticles(); });
+        window.addEventListener('resize', () => { 
+            if (activePageIndex === 0) initLandingParticles(); 
+            if (activePageIndex === 3) {
+                const container = document.getElementById('heart-gallery');
+                if (container) container.innerHTML = '<div class="center-birthday-text"><div class="hd-title">Happy Birthday</div><div class="name-title">Leyonn!</div></div>';
+                initHeart();
+            }
+        });
 
-        // --- CORE FUNCTIONS ---
         function openLightbox(src) {
             const lb = document.getElementById('lightbox');
             if(!lb) return;
@@ -630,11 +642,15 @@
         function initHeart() {
             const container = document.getElementById('heart-gallery');
             if (!container || container.children.length > 1) return;
+
             photos.forEach((src, i) => {
                 const t = (i / photos.length) * (2 * Math.PI);
                 const x = 16 * Math.pow(Math.sin(t), 3) * 18, y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * 18;
+                
                 const card = document.createElement('div');
-                card.className = 'polaroid'; card.style.left = `calc(50% + ${x}px - 45px)`; card.style.top = `calc(50% + ${y}px - 45px)`;
+                card.className = 'polaroid'; 
+                card.style.left = `calc(50% + ${x}px - 45px)`; 
+                card.style.top = `calc(50% + ${y}px - 45px)`;
                 card.setAttribute('onclick', `openLightbox('${src}')`);
                 card.innerHTML = `<img src="${src}">`;
                 container.appendChild(card);
@@ -984,15 +1000,16 @@
             if(stars) stars.style.transform = 'scale(1) translate(0, 0)'; if(ariesCanvas) ariesCanvas.style.transform = 'scale(1) translate(0, 0)'; 
             if(moon) { moon.style.transform = 'translate(0, 0) scale(1)'; }
             ariesHighlight = 0; 
+            
             setTimeout(() => { 
                 if(overlay) overlay.style.display = 'none'; 
                 if(backBtn) backBtn.style.display = 'none'; 
                 startScroller(); 
+                
+                setTimeout(() => { 
+                    if (moon) moon.classList.add('glow-active');
+                }, 1000);
             }, 2000);
-
-            setTimeout(() => { 
-                if (moon) moon.classList.add('glow-active');
-            }, 4000);
         }
 
         function finishCountdown() {
