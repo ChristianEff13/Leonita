@@ -139,9 +139,9 @@
         .moon { 
             position: absolute; top: 10%; right: 15%; width: 90px; height: auto; 
             filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.4)); 
-            transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1), filter 2s ease; 
+            transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1), filter 0.5s ease; 
             image-rendering: auto;
-            z-index: 99999; /* LAPISAN TERTINGGI MUTLAK AGAR TIDAK TERHALANG */
+            z-index: 99999; 
             pointer-events: none;
         }
         .moon.glow-active { 
@@ -169,7 +169,7 @@
         .wish-item p { color: #ccc; font-weight: 300; line-height: 1.8; font-size: 1.1rem; }
         
         #final-aries-overlay { position: fixed; inset: 0; z-index: 15000; display: none; flex-direction: column; justify-content: center; align-items: center; background: transparent; text-align: center; padding: 40px; pointer-events: none; width: 100%; height: 100%; }
-        .aries-quote { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.4rem, 4vw, 2.5rem); font-style: italic; color: var(--white); opacity: 0; transition: opacity 3s ease; line-height: 1.6; max-width: 900px; text-shadow: 0 0 20px rgba(197, 160, 89, 0.5); margin-top: 50px; }
+        .aries-quote { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.2rem, 5vw, 2.5rem); font-style: italic; color: var(--white); opacity: 0; transition: opacity 3s ease; line-height: 1.6; width: 90%; max-width: 900px; text-shadow: 0 0 20px rgba(197, 160, 89, 0.5); margin-top: 50px; padding: 0 20px; text-align: center; }
         #aries-const-canvas { position: absolute; inset: 0; z-index: 1; pointer-events: none; transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
 
         #back-to-wishes { position: fixed; bottom: 10vh; left: 50%; transform: translateX(-50%); z-index: 26000; display: none; opacity: 0; transition: 1s; pointer-events: auto; padding: 15px 35px; font-size: 1rem; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); width: max-content; background: rgba(3, 8, 10, 0.8); color: var(--gold); border: 1px solid var(--gold); }
@@ -190,6 +190,11 @@
     </style>
 </head>
 <body>
+
+    <!-- Background Music -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="https://github.com/ChristianEff13/Leonita/raw/refs/heads/main/LANY%20-%20%27Cause%20You%20Have%20To%20(Official%20Lyric%20Video).mp3" type="audio/mpeg">
+    </audio>
 
     <!-- Lightbox -->
     <div id="lightbox" onclick="closeLightbox()">
@@ -227,7 +232,7 @@
 
     <!-- Login Overlay -->
     <div id="login-overlay">
-        <div class="login-box">
+        <div class="login-box" id="login-step-1">
             <h2>Private Access</h2>
             <input type="password" id="pw-input" placeholder="Enter Password" onkeypress="handlePwKey(event)">
             <p id="error-msg" class="error-msg">Incorrect password, please try again.</p>
@@ -410,7 +415,6 @@
         const bgFwCanvas = document.getElementById('bg-fireworks-canvas');
         const bgFwCtx = bgFwCanvas ? bgFwCanvas.getContext('2d') : null;
 
-        // --- LANDING PARTICLES ---
         const lpCanvas = document.getElementById('landing-particles');
         const lpCtx = lpCanvas ? lpCanvas.getContext('2d') : null;
         let landingParticlesArray = [];
@@ -517,10 +521,12 @@
             initAudio();
             const input = document.getElementById('pw-input').value;
             const error = document.getElementById('error-msg');
+            
             if (input === "admin123" || input === "HBDLEON" || input === "Leonita123") {
                 currentPassword = input;
                 const navContainer = document.getElementById('nav-container');
                 if (navContainer) navContainer.style.display = 'flex';
+                
                 const fwdBtn = document.getElementById('fwd-btn');
                 if (input === "admin123") {
                     accessLevel = "full"; adminBypassCountdown = true; finishCountdown();
@@ -576,6 +582,13 @@
 
         function startJourney() {
             initAudio();
+            
+            const bgMusic = document.getElementById('bg-music');
+            if (bgMusic) {
+                bgMusic.volume = 0.5; 
+                bgMusic.play().catch(e => console.log("Auto-play audio diblokir:", e));
+            }
+
             const landing = document.getElementById('page-landing'), overlay = document.getElementById('login-overlay'), cLink = document.getElementById('my-console-link');
             if (overlay) overlay.style.opacity = '0';
             if (landing) landing.style.opacity = '0';
@@ -642,7 +655,7 @@
         function initHeart() {
             const container = document.getElementById('heart-gallery');
             if (!container || container.children.length > 1) return;
-
+            
             photos.forEach((src, i) => {
                 const t = (i / photos.length) * (2 * Math.PI);
                 const x = 16 * Math.pow(Math.sin(t), 3) * 18, y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * 18;
