@@ -12,7 +12,7 @@
             --bg-night: #010305;
             --gold: #c5a059; --gold-light: #e5c986;
             --white: #ffffff;
-            --sun-ray: rgba(255, 255, 255, 0.03);
+            --sun-ray: rgba(255, 255, 255, 0.04);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -50,7 +50,11 @@
             box-shadow: 0 0 15px rgba(197, 160, 89, 0.3);
             transform: scale(1.05);
         }
-        .console-link svg { width: 20px; height: 20px; fill: currentColor; }
+        .console-link svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
 
         /* --- Navigation Controls --- */
         .nav-controls {
@@ -82,7 +86,7 @@
         /* --- Landing Page --- */
         #page-landing { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; width: 100%; padding: 20px; transition: opacity 1.5s ease; }
         .sunbeams { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% -20%, #1a2a30 0%, #03080a 80%); }
-        .ray { position: absolute; top: -50%; left: 50%; width: 300%; height: 200%; background: repeating-linear-gradient(95deg, transparent 0%, transparent 5%, var(--sun-ray) 7%, transparent 10%, transparent 12%, var(--sun-ray) 15%); transform-origin: center top; animation: raysRotate 30s infinite alternate ease-in-out; filter: blur(20px); }
+        .ray { position: absolute; top: -50%; left: 50%; width: 300%; height: 200%; background: repeating-linear-gradient(95deg, transparent 0%, transparent 5%, var(--sun-ray) 7%, transparent 10%, transparent 12%, var(--sun-ray) 15%); transform-origin: center top; animation: raysRotate 25s infinite linear; filter: blur(20px); }
         @keyframes raysRotate { 0% { transform: translateX(-50%) rotate(0deg); } 100% { transform: translateX(-50%) rotate(15deg); } }
         
         #landing-particles { position: absolute; inset: 0; z-index: 1; pointer-events: none; width: 100%; height: 100%; }
@@ -92,7 +96,7 @@
         .count-item span:first-child { font-size: clamp(2rem, 7vw, 4rem); color: var(--gold-light); display: block; font-family: 'Cormorant Garamond', serif; font-weight: 600; }
         .count-item span:last-child { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); }
         
-        .next-btn { background: transparent; color: var(--gold); border: 1px solid var(--gold); padding: 18px 50px; border-radius: 100px; cursor: pointer; text-transform: uppercase; letter-spacing: 4px; font-size: 0.75rem; transition: 0.5s; z-index: 20; position: relative; }
+        .next-btn { background: transparent; color: var(--gold); border: 1px solid var(--gold); padding: 18px 50px; border-radius: 100px; cursor: pointer; text-transform: uppercase; letter-spacing: 4px; font-size: 0.75rem; transition: 0.5s; position: relative; z-index: 20; }
         .next-btn:hover { background: var(--gold); color: white; box-shadow: 0 0 30px rgba(197, 160, 89, 0.4); }
 
         /* --- Login Modal --- */
@@ -114,6 +118,11 @@
         .bokeh { position: absolute; border-radius: 50%; background: var(--gold-light); opacity: 0.15; filter: blur(15px); animation: floatBokeh 10s infinite ease-in-out; }
         @keyframes floatBokeh { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-30px) scale(1.1); } }
 
+        /* --- Loading Screen (Photos Preloader) --- */
+        #loading-screen { position: fixed; inset: 0; z-index: 10000; background: var(--bg-bright); display: none; justify-content: center; align-items: center; flex-direction: column; opacity: 0; transition: opacity 1s ease; }
+        .spinner { width: 50px; height: 50px; border: 3px solid rgba(197, 160, 89, 0.3); border-radius: 50%; border-top-color: var(--gold); animation: spin 1s ease-in-out infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         /* --- Celebration Page --- */
         #page-celebration { display: none; opacity: 0; width: 100%; background: var(--bg-bright); color: #333; transition: opacity 2.5s ease; padding-bottom: 100px; }
         .scroll-hint { font-size: 0.9rem; letter-spacing: 6px; color: var(--gold); text-transform: uppercase; padding: 100px 0 40px; text-align: center; }
@@ -121,7 +130,6 @@
         .center-birthday-text { position: absolute; font-family: 'Dancing Script', cursive; color: var(--gold); text-align: center; z-index: 50; pointer-events: none; text-shadow: 2px 2px 15px rgba(255, 255, 255, 0.6); }
         .center-birthday-text .hd-title { font-size: clamp(2rem, 6vw, 4rem); font-weight: 600; }
         .center-birthday-text .name-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 700; }
-        
         .polaroid { position: absolute; background: white; padding: 5px 5px 18px 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); width: clamp(70px, 12vw, 90px); transition: 0.4s; z-index: 20; cursor: zoom-in; }
         .polaroid img { width: 100%; height: clamp(60px, 10vw, 85px); object-fit: cover; }
         .polaroid:hover { transform: scale(2.5) rotate(0deg) !important; z-index: 1000; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
@@ -134,48 +142,54 @@
 
         /* --- Night Scene --- */
         #page-surprise { display: none; position: fixed; inset: 0; z-index: 10000; background: var(--bg-night); opacity: 0; transition: opacity 2s ease; flex-direction: column; justify-content: center; align-items: center; text-align: center; overflow: hidden; }
-        .night-sky { position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle at 20% 30%, rgba(10, 25, 45, 1) 0%, transparent 50%), radial-gradient(circle at 80% 70%, rgba(15, 20, 35, 1) 0%, transparent 50%), linear-gradient(135deg, #010305 0%, #03080e 50%, #010305 100%); overflow: hidden; }
+        .night-sky { position: absolute; inset: 0; z-index: -1; background: radial-gradient(circle at 10% 20%, #0a151a 0%, #010305 70%); overflow: hidden; }
         
         .moon { 
-            position: absolute; top: 10%; right: 15%; width: 90px; height: auto; 
-            filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.4)); 
-            transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1), filter 0.5s ease; 
-            image-rendering: auto;
-            z-index: 99999; 
-            pointer-events: none;
+            position: absolute; top: 10%; right: 15%; width: 100px; height: 100px; 
+            background: radial-gradient(circle at 30% 30%, #ffffff, #f0f0f0 40%, #d1d1d1 100%); 
+            border-radius: 50%; box-shadow: 0 0 50px rgba(255,255,255,0.25), inset -15px -15px 30px rgba(0,0,0,0.15); 
+            filter: drop-shadow(0 0 5px white); transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1); 
+            z-index: 99999; pointer-events: none; 
         }
-        .moon.glow-active { 
-            cursor: pointer; 
-            pointer-events: auto !important; 
-            animation: moonGlow 2.5s infinite alternate ease-in-out; 
-        }
-        @keyframes moonGlow { 
-            0% { filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6)) brightness(1.1); } 
-            100% { filter: drop-shadow(0 0 50px rgba(255, 240, 100, 1)) brightness(1.3); } 
-        }
+        .moon.glow-active { animation: moonGlow 2.5s infinite alternate ease-in-out; }
+        @keyframes moonGlow { 0% { filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6)) brightness(1.1); } 100% { filter: drop-shadow(0 0 50px rgba(255, 240, 100, 1)) brightness(1.3); } }
         
+        /* Hitbox transparan untuk bulan */
+        #moon-hitbox {
+            position: absolute;
+            top: 10%;
+            right: 15%;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            z-index: 999999;
+            cursor: pointer;
+            display: none;
+            background: transparent;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         #wish-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 8vw, 4rem); font-style: italic; color: var(--gold); opacity: 0; transition: 1.5s; margin-bottom: 30px; }
         
         #bg-fireworks-canvas { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
-        #shooting-star-canvas { position: absolute; inset: 0; z-index: 20500; pointer-events: none; }
-        #firework-text-canvas { position: absolute; inset: 0; z-index: 21000; pointer-events: none; }
-        #stars-night { position: absolute; inset: 0; z-index: 2; transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; pointer-events: none; }
+        #shooting-star-canvas { position: absolute; inset: 0; z-index: 10; pointer-events: none; }
+        #firework-text-canvas { position: absolute; inset: 0; z-index: 100; pointer-events: none; }
+        #stars-night { position: absolute; inset: 0; z-index: 2; transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
 
         #aries-bg-img { position: absolute; inset: 0; z-index: 1; pointer-events: none; transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1), opacity 2s ease; transform-origin: center center; opacity: 0; width: 100%; height: 100%; object-fit: contain; mix-blend-mode: screen; }
         #aries-const-canvas { position: absolute; inset: 0; z-index: 2; pointer-events: none; transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
 
-        #friends-wishes-scene { display: none; position: absolute; inset: 0; z-index: 25000; flex-direction: column; align-items: center; color: #fff; opacity: 0; transition: opacity 2s ease; padding-top: 10vh; pointer-events: none; }
-        #wishes-scroller-container { width: 100%; height: 80vh; overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none; padding-top: 50vh; padding-bottom: 50vh; scroll-behavior: auto; pointer-events: auto; }
+        #friends-wishes-scene { display: none; position: absolute; inset: 0; z-index: 200; flex-direction: column; align-items: center; color: #fff; opacity: 0; transition: opacity 2s ease; padding-top: 10vh; }
+        #wishes-scroller-container { width: 100%; height: 80vh; overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none; padding-top: 50vh; padding-bottom: 50vh; scroll-behavior: auto; }
         #wishes-scroller-container::-webkit-scrollbar { display: none; }
         .wish-item { margin-bottom: 120px; text-align: center; max-width: 600px; padding: 0 20px; margin-left: auto; margin-right: auto; }
         .wish-item h3 { color: var(--gold); font-family: 'Cormorant Garamond'; font-size: 1.8rem; margin-bottom: 10px; }
         .wish-item p { color: #ccc; font-weight: 300; line-height: 1.8; font-size: 1.1rem; }
         
-        #final-aries-overlay { position: fixed; inset: 0; z-index: 15000; display: none; flex-direction: column; justify-content: center; align-items: center; background: transparent; text-align: center; padding: 40px; pointer-events: none; width: 100%; height: 100%; }
-        .aries-quote { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.2rem, 5vw, 2.5rem); font-style: italic; color: var(--white); opacity: 0; transition: opacity 3s ease; line-height: 1.6; width: 90%; max-width: 900px; text-shadow: 0 0 20px rgba(197, 160, 89, 0.5); margin-top: 50px; padding: 0 20px; text-align: center; }
+        #final-aries-overlay { position: fixed; inset: 0; z-index: 15000; display: none; flex-direction: column; justify-content: center; align-items: center; background: transparent; text-align: center; padding: 40px; pointer-events: none; }
+        .aries-quote { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.4rem, 4vw, 2.5rem); font-style: italic; color: var(--white); opacity: 0; transition: opacity 3s ease; line-height: 1.6; max-width: 900px; text-shadow: 0 0 20px rgba(197, 160, 89, 0.5); margin-top: 50px; }
 
-        #back-to-wishes { position: fixed; bottom: 10vh; left: 50%; transform: translateX(-50%); z-index: 26000; display: none; opacity: 0; transition: 1s; pointer-events: auto; padding: 15px 35px; font-size: 1rem; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); width: max-content; background: rgba(3, 8, 10, 0.8); color: var(--gold); border: 1px solid var(--gold); }
-        #back-to-wishes:hover { background: var(--gold); color: white; }
+        #back-to-wishes { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 16000; display: none; opacity: 0; transition: 1s; }
 
         #balloon-container { position: fixed; inset: 0; pointer-events: none; z-index: 9000; }
         .balloon-wrapper { position: absolute; pointer-events: auto; cursor: pointer; display: flex; flex-direction: column; align-items: center; z-index: 9500; }
@@ -187,21 +201,26 @@
         @media (max-width: 768px) {
             .message-box { padding: 30px 20px; margin-top: 40px; width: 90%; }
             #back-to-wishes { bottom: 12vh; padding: 20px 40px; font-size: 1.2rem; }
-            .moon { right: 5%; top: 5%; }
+            .moon, #moon-hitbox { right: 5%; top: 5%; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Background Music -->
     <audio id="bg-music" loop preload="auto">
         <source src="https://github.com/ChristianEff13/Leonita/raw/refs/heads/main/LANY%20-%20%27Cause%20You%20Have%20To%20(Official%20Lyric%20Video).mp3" type="audio/mpeg">
     </audio>
 
-    <!-- Lightbox -->
     <div id="lightbox" onclick="closeLightbox()">
         <img id="lightbox-img" src="" alt="Memory">
     </div>
+
+    <!-- Small Console Link (Top Left) -->
+    <a href="https://christianeff13.github.io/CrossDataGame/" target="_blank" class="console-link" id="my-console-link" title="Cross Data Game">
+        <svg viewBox="0 0 24 24">
+            <path d="M20,12H18V10H16V12H14V14H16V16H18V14H20V12M9,10H7V12H5V14H7V16H9V14H11V12H9V10M22,6H2V18H22V6M22,4A2,2 0 0,1 24,6V18A2,2 0 0,1 22,20H2A2,2 0 0,1 0,18V6A2,2 0 0,1 2,4H22Z" />
+        </svg>
+    </a>
 
     <!-- Navigation Controls -->
     <div class="nav-controls" id="nav-container">
@@ -213,11 +232,10 @@
         </button>
     </div>
 
-    <!-- Landing Page -->
     <div id="page-landing">
         <div class="sunbeams"><div class="ray"></div></div>
         <canvas id="landing-particles"></canvas>
-        <section style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%;">
+        <section style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; position: relative; z-index: 2;">
             <div class="hero"><h1>Nineteen to <span style="color: var(--gold)">Twenty</span></h1></div>
             <div class="countdown" id="countdown-container">
                 <div class="count-item"><span id="days">00</span><span>Days</span></div>
@@ -225,14 +243,13 @@
                 <div class="count-item"><span id="mins">00</span><span>Mins</span></div>
                 <div class="count-item"><span id="secs">00</span><span>Secs</span></div>
             </div>
-            <p style="margin-bottom: 40px; color: rgba(255,255,255,0.6); max-width: 450px; line-height: 1.6; font-size: 0.9rem; position: relative; z-index: 2;">
+            <p style="margin-bottom: 40px; color: rgba(255,255,255,0.6); max-width: 450px; line-height: 1.6; font-size: 0.9rem;">
                 "Helloo Leyonn!, Are You Ready To Start The Journey?"
             </p>
             <button class="next-btn" onclick="showLogin()">Open The Surprise</button>
         </section>
     </div>
 
-    <!-- Login Overlay -->
     <div id="login-overlay">
         <div class="login-box" id="login-step-1">
             <h2>Private Access</h2>
@@ -243,7 +260,6 @@
         </div>
     </div>
 
-    <!-- Game Session -->
     <div id="game-session">
         <div class="bokeh-wrap" id="bokeh-container"></div>
         <div id="game-ui">
@@ -252,7 +268,12 @@
         </div>
     </div>
 
-    <!-- Celebration Page -->
+    <!-- Loading Screen (Preloader) -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <p style="color: var(--gold); font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-style: italic; margin-top: 20px; letter-spacing: 2px;">Thinking hard... almost done... (just kidding)</p>
+    </div>
+
     <div id="page-celebration">
         <div class="scroll-hint">Amazing! Scroll Down ↓</div>
         <div class="heart-container" id="heart-gallery">
@@ -263,12 +284,9 @@
         </div>
         <div class="message-box" id="trigger-box">
             <div id="private-content">
-                <div id="romantic-message" style="text-align: center;">
+                <div id="romantic-message">
                     <p style="font-family: 'Cormorant Garamond'; font-style: italic; font-size: 1.8rem; font-weight: 600;">"Maybe I’m not the best boyfriend, but you are truly the best girlfriend."</p>
-                    <div style="margin: 20px 0;">
-                        <p style="color: var(--gold); font-family: 'Noto Sans SC'; letter-spacing: 2px; font-size: 1.5rem; margin-bottom: 5px;">“你是最好的女朋友。”</p>
-                        <p style="color: var(--gold); opacity: 0.4; font-size: 0.9rem; font-style: italic; letter-spacing: 1px;">nǐ shì zuì hǎo de nǚ péngyǒu</p>
-                    </div>
+                    <p style="color: var(--gold); margin: 20px 0; font-family: 'Noto Sans SC'; letter-spacing: 2px;">“也许我不是最好的男朋友，但你绝对是最好的女朋友。”</p>
                     <div class="personal-note"><span id="typewriter-display"></span><span id="typewriter-cursor"></span></div>
                 </div>
                 <div id="generic-message" style="display:none; padding: 40px 0;">
@@ -280,14 +298,16 @@
         </div>
     </div>
 
-    <!-- Surprise Page -->
     <div id="page-surprise">
+        <!-- TONGKAT AJAIB: Lapisan transparan (hitbox) khusus bulan agar mudah dipencet -->
+        <div id="moon-hitbox" onclick="handleMoonClick()"></div>
+        
         <div class="night-sky">
+            <div class="moon" id="moon-element"></div>
             <canvas id="stars-night"></canvas>
             <img id="aries-bg-img" src="https://i.postimg.cc/kg8hhn2L/6d378ccc-3454-4afc-a8d2-980f1c0445ae.png" alt="Aries Background">
             <canvas id="aries-const-canvas"></canvas>
         </div>
-        <img class="moon" id="moon-element" src="https://i.postimg.cc/qBWTkxXD/moon-png-no-background-15.png" alt="Moon" onerror="this.src='https://i.postimg.cc/mD8pTzY2/moon-placeholder.png'" onclick="handleMoonClick()">
         <canvas id="bg-fireworks-canvas"></canvas>
         <canvas id="shooting-star-canvas"></canvas>
         <canvas id="firework-text-canvas"></canvas>
@@ -295,131 +315,68 @@
         <button id="done-btn" class="next-btn" style="display: none; opacity: 0; transition: 0.5s; z-index: 20000;" onclick="handleDoneWish()">Done</button>
         
         <div id="friends-wishes-scene">
-            <h1 style="position: absolute; top: 4%; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; font-family: 'Cormorant Garamond'; font-size: clamp(2.5rem, 7vw, 4rem); color: var(--gold); margin: 0; font-style: italic; text-shadow: 0 0 20px rgba(197, 160, 89, 0.5);">Happy Birthday Leonita!</h1>
+            <h1 style="font-family: 'Cormorant Garamond'; font-size: clamp(2rem, 6vw, 3rem); color: var(--gold); margin-bottom: 30px; font-style: italic;">Happy Birthday Leonita!</h1>
             <div id="wishes-scroller-container">
                 <div class="wish-item" style="margin-top: 100px;"><h3>Alexa</h3><p>HAAPPY BIRTHDAYYYY to our leyonzzz ❤️ wishing you all the best! semoga di tahun ini dan berikut"nya kamu bahagia terus entah dari aspek family, temen, pasangan, keuangan, kuliah, dan semua"nyaa. gila dah mau 10 taun ni kita tmeenan, and i hope bisa terus sampe 100 tahun lamanya anjayy 😎 kalau ada apa apa im here to help you and be on your side always (tp kalo kamu salah aku marahin ttp ye 🤓) langgeng ya sama tiann, aku mau ngasih tau sesuatu tp nnti ah kalo udah pulang ya hehehe biar suprise. gass kita kerja keras supaya bisa keliling dunia bareng cuyy + rumah tetanggaan di BSD atoga GS aja ya soalnya karawang burik gaada apa apa nanti. Enjoy your day and year!! Buddha Bless you 💕</p></div>
                 <div class="wish-item"><h3>Amoy</h3><p>haloo lion 🦁 Happy birthdayy yaa moicai anciangg, semoga di umur yang baru semakin sukses,priti,baik terus ke semua orang supel, friendlyyy, smoga lingkungan skitar km isinya org baik baikk semuaa sama kamuu, semoga juga ttp jadi kebanggan keluargaa dan jd manfaat buat banyak orang, jangan banyak overthinking dan merasa tidak enak sm org yang nyebelin sm kmu yon...smoga rajin terus bekerja supaya bisa liburan bersama, ayo kt main lagi, once again happy birthdayyy lionn💛💛💛</p></div>
                 <div class="wish-item"><h3>Syisyi</h3><p>Happy Birthday, Leon🤍 Thank you for always being there for Syisyi. You know how much Syisyi loves u, always and endlessly ♡  I hope ur days are filled with happiness, your heart always feels light, and every dream you carry slowly finds its way to you. May everything you wish for come true, and everything you need always be within reach. i love UUUU leooNnN</p></div>
                 <div style="text-align: center; padding-bottom: 200px;">
-                    <button class="next-btn" onclick="startAriesJourney()" style="pointer-events: auto;">See The Stars</button>
+                    <button class="next-btn" onclick="startAriesJourney()">See The Stars</button>
                 </div>
             </div>
         </div>
 
         <div id="final-aries-overlay">
             <div class="aries-quote" id="final-quote">
-                “April 13, 2006 was not just a date; it was the beginning of a beautiful story written by a girl who would grow to inspire hearts around her.”
+                “April 13 2006 was not just a date, it was the beginning of a beautiful story written by a girl who would grow to inspire hearts around her.”
             </div>
         </div>
-        <button id="back-to-wishes" class="next-btn" onclick="resetFromStars()">Back to Wishes</button>
+        <button id="back-to-wishes" class="next-btn" style="border-radius: 5px; padding: 10px 20px; font-size: 0.6rem;" onclick="resetFromStars()">Back to Wishes</button>
     </div>
 
     <div id="balloon-container"></div>
 
     <script>
-        // --- GLOBAL VARIABLES ---
         let accessLevel = "none";
-        let currentPassword = ""; 
+        const photos = ['https://i.postimg.cc/Q9t6F51F/image.jpg', 'https://i.postimg.cc/YG9XvgYL/image.jpg', 'https://i.postimg.cc/sQXnMS77/image.jpg', 'https://i.postimg.cc/mzDdPMC7/image.jpg', 'https://i.postimg.cc/G82M4YGJ/image.jpg', 'https://i.postimg.cc/gXJMxR8H/image.jpg', 'https://i.postimg.cc/0rmDqsWQ/image.jpg', 'https://i.postimg.cc/5jvLMV7t/image.jpg', 'https://i.postimg.cc/TyTNXBPc/image.jpg', 'https://i.postimg.cc/XZxHNxZm/image.jpg', 'https://i.postimg.cc/qtQbBQtD/image.jpg', 'https://i.postimg.cc/QBS4NSBP/image.jpg', 'https://i.postimg.cc/SXVTQVXv/image.jpg', 'https://i.postimg.cc/KKQqcQkS/image.jpg', 'https://i.postimg.cc/67zj6z2X/image.jpg', 'https://i.postimg.cc/4KwL4w7R/image.jpg', 'https://i.postimg.cc/2qTcjTbm/image.jpg', 'https://i.postimg.cc/QBS4NS9x/image.jpg', 'https://i.postimg.cc/KkH0BzDM/image.jpg', 'https://i.postimg.cc/3y9Sr94r/image.jpg', 'https://i.postimg.cc/8FwKkwJC/image.jpg', 'https://i.postimg.cc/JyK67KD0/image.jpg', 'https://i.postimg.cc/LYXyJfL2/image.jpg', 'https://i.postimg.cc/S2sZn8Cm/image.jpg', 'https://i.postimg.cc/WF39drgt/image.jpg', 'https://i.postimg.cc/47d8YtVK/image.jpg', 'https://i.postimg.cc/R6DgKFL7/image.jpg', 'https://i.postimg.cc/dkx5r1jT/image.jpg', 'https://i.postimg.cc/7GWK06ng/image.jpg', 'https://i.postimg.cc/KkH0BzDN/image.jpg', 'https://i.postimg.cc/23vhfDcm/image.jpg', 'https://i.postimg.cc/BLVmH6Bp/image.jpg', 'https://i.postimg.cc/Hch6Xx93/image.jpg'];
+        
+        const fullText = "Halooo Lemon, sekarang kamu udah umur 20 lohh, gak berasa yaa waktu udah bawa kamu ke umur yang sekarang, dan mungkin kamu gak nyangka juga bisa ketemu aku di tengah-tengah perjalanan kamu. \n\nHappyy birthdayy yaaa My Deer Lemonn, mungkin aku bukan pacar yang terbaik, tapii kamuu yangg merupakan pacar terbaik buatt aku. Aku berdoa untuk kesehatan kamu, perlindungan buat kamu, berkat melimpah, umur yang panjang, dan masa depan yang Indah buat kamu Leyonn (terutama di Beauty Industry).\n\nMaaff jugaa yaa kalau aku engga bisa kasih kamu hadiah yangg mungkin kamu inginkan. Tapi aku harap kamu suka hadiah yangg akan aku kasih ke kamu Lemonn.\n\nSekali lagii happyy birthdayyy yaaa Lemonnn, My Deer Lemonnn. I Lovee Youu Leonita Kumala Dewi, our love will be forever.";
+
+        let popped = 0, gameActive = false;
         let activePageIndex = 0;
-        let twObserver = null;
-        let twTimeout = null;
+        let currentPassword = "";
         let adminBypassCountdown = false;
         let countdownInterval;
-        let ariesHighlight = 0; 
-        let popped = 0;
-        let gameActive = false;
-        let bgFireworks = [];
-        let textFireworks = [];
-        let isUserScrolling = false;
-        let scrollTimeout;
-        let scrollPos = 0;
-        let autoScrollActive = false;
-        let scrollerInitialized = false;
 
-        // --- WEB AUDIO API FOR SOUND EFFECTS (SAFE INIT) ---
-        let audioCtx;
-        function initAudio() {
-            try {
-                if (!audioCtx) {
-                    const AudioContext = window.AudioContext || window.webkitAudioContext;
-                    if(AudioContext) audioCtx = new AudioContext();
-                }
-                if (audioCtx && audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
-            } catch(e) {
-                console.log("Audio API not supported or blocked");
-            }
-        }
-
-        function playPopSound() {
-            if (!audioCtx) return;
-            try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
-                // Volume sangat halus
-                gain.gain.setValueAtTime(0.03, audioCtx.currentTime); 
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.1);
-            } catch(e) {}
-        }
-
-        let lastFwTime = 0;
-        function playFireworkSound() {
-            if (!audioCtx) return;
-            try {
-                const now = Date.now();
-                if (now - lastFwTime < 150) return; 
-                lastFwTime = now;
-                
-                const dur = 0.5 + Math.random() * 0.3; 
-                const bufferSize = audioCtx.sampleRate * dur;
-                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-                const data = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) {
-                    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i/bufferSize, 2);
-                }
-                const noise = audioCtx.createBufferSource();
-                noise.buffer = buffer;
-                
-                const filter = audioCtx.createBiquadFilter();
-                filter.type = 'lowpass';
-                filter.frequency.value = 250 + Math.random() * 200; 
-                
-                const gain = audioCtx.createGain();
-                gain.gain.setValueAtTime(0, audioCtx.currentTime); 
-                // Volume dikecilkan menjadi sangat halus
-                gain.gain.linearRampToValueAtTime(0.005 + Math.random() * 0.003, audioCtx.currentTime + 0.05); 
-                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + dur);
-                
-                noise.connect(filter);
-                filter.connect(gain);
-                gain.connect(audioCtx.destination);
-                noise.start();
-            } catch(e) {}
-        }
-
-        const pageFlow = ['page-landing', 'login-overlay', 'game-session', 'page-celebration', 'page-surprise'];
         const colors = ['#FF5E5E', '#FFD700', '#FF7ED4', '#70FF8B', '#70D1FF', '#FF9F43'];
-        const photos = ['https://i.postimg.cc/Q9t6F51F/image.jpg', 'https://i.postimg.cc/YG9XvgYL/image.jpg', 'https://i.postimg.cc/sQXnMS77/image.jpg', 'https://i.postimg.cc/mzDdPMC7/image.jpg', 'https://i.postimg.cc/G82M4YGJ/image.jpg', 'https://i.postimg.cc/gXJMxR8H/image.jpg', 'https://i.postimg.cc/0rmDqsWQ/image.jpg', 'https://i.postimg.cc/5jvLMV7t/image.jpg', 'https://i.postimg.cc/TyTNXBPc/image.jpg', 'https://i.postimg.cc/XZxHNxZm/image.jpg', 'https://i.postimg.cc/qtQbBQtD/image.jpg', 'https://i.postimg.cc/QBS4NSBP/image.jpg', 'https://i.postimg.cc/SXVTQVXv/image.jpg', 'https://i.postimg.cc/KKQqcQkS/image.jpg', 'https://i.postimg.cc/67zj6z2X/image.jpg', 'https://i.postimg.cc/4KwL4w7R/image.jpg', 'https://i.postimg.cc/2qTcjTbm/image.jpg', 'https://i.postimg.cc/QBS4NS9x/image.jpg', 'https://i.postimg.cc/KkH0BzDM/image.jpg', 'https://i.postimg.cc/3y9Sr94r/image.jpg', 'https://i.postimg.cc/8FwKkwJC/image.jpg', 'https://i.postimg.cc/JyK67KD0/image.jpg', 'https://i.postimg.cc/LYXyJfL2/image.jpg', 'https://i.postimg.cc/S2sZn8Cm/image.jpg', 'https://i.postimg.cc/WF39drgt/image.jpg', 'https://i.postimg.cc/47d8YtVK/image.jpg', 'https://i.postimg.cc/R6DgKFL7/image.jpg', 'https://i.postimg.cc/dkx5r1jT/image.jpg', 'https://i.postimg.cc/7GWK06ng/image.jpg', 'https://i.postimg.cc/KkH0BzDN/image.jpg', 'https://i.postimg.cc/23vhfDcm/image.jpg', 'https://i.postimg.cc/BLVmH6Bp/image.jpg', 'https://i.postimg.cc/Hch6Xx93/image.jpg'];
-        const fullText = "Halooo Lemon, sekarang kamu udah umur 20 lohh, gak berasa yaa waktu udah bawa kamu ke umur yang sekarang, dan mungkin kamu gak nyangka juga bisa ketemu aku di tengah-tengah perjalanan kamu. \n\nHappyy birthdayy yaaa My Deer Lemonn, mungkin aku bukan pacar yang terbaik, tapii kamuu yangg merupakan pacar terbaik buatt aku. Aku berdoa untuk kesehatan kamu, perlindungan buat kamu, berkat melimpah, umur yang panjang, dan masa depan yang Indah buat kamu Leyonn (terutama di Beauty Industry).\n\nMaaff jugaa yaa kalau aku engga bisa kasih kamu hadiah yangg mungkin kamu inginkan. Tapi aku harap kamu suka hadiah yangg akan aku kasih ke kamu Lemonn.\n\nSekali lagii happyy birthdayyy yaaa Lemonnn, My Deer Lemonnn. I Lovee Youu Leonita Kumala Dewi, our love will be forever.";
+        const pageFlow = ['page-landing', 'login-overlay', 'game-session', 'page-celebration', 'page-surprise'];
         
-        const ariesStars = [{x: 0.50, y: 0.40, r: 4}, {x: 0.58, y: 0.47, r: 3}, {x: 0.63, y: 0.60, r: 2}, {x: 0.73, y: 0.70, r: 2.5}];
-
         const fwCanvas = document.getElementById('firework-text-canvas');
-        const fwCtx = fwCanvas ? fwCanvas.getContext('2d') : null;
+        const fwCtx = fwCanvas.getContext('2d');
         const bgFwCanvas = document.getElementById('bg-fireworks-canvas');
-        const bgFwCtx = bgFwCanvas ? bgFwCanvas.getContext('2d') : null;
-
+        const bgFwCtx = bgFwCanvas.getContext('2d');
         const lpCanvas = document.getElementById('landing-particles');
         const lpCtx = lpCanvas ? lpCanvas.getContext('2d') : null;
         let landingParticlesArray = [];
+
+        // --- AUDIO SOUND EFFECTS ---
+        const popSoundUrls = [
+            "https://github.com/ChristianEff13/Leonita/raw/refs/heads/main/creatorshome-sharp-pop-328170.mp3",
+            "https://github.com/ChristianEff13/Leonita/raw/refs/heads/main/soundreality-pop-423717.mp3",
+            "https://github.com/ChristianEff13/Leonita/raw/refs/heads/main/soundreality-pop-sound-423716.mp3"
+        ];
+        const popAudios = popSoundUrls.map(url => { const a = new Audio(url); a.preload = 'auto'; return a; });
+
+        const fwSoundUrls = [
+            "https://github.com/ChristianEff13/Leonita/raw/refs/heads/main/u_b32baquv5u-8-bit-explosion-10-340462.mp3",
+            "https://github.com/ChristianEff13/Leonita/raw/refs/heads/main/u_b32baquv5u-8-bit-explosion-11-340459.mp3",
+            "https://github.com/ChristianEff13/Leonita/raw/refs/heads/main/u_b32baquv5u-explosion-9-340460.mp3"
+        ];
+        const fwAudios = fwSoundUrls.map(url => { const a = new Audio(url); a.preload = 'auto'; return a; });
+
+        const clusterAudio = new Audio("https://github.com/ChristianEff13/Leonita/raw/refs/heads/main/freesound_community-firework-cluster-90480.mp3");
+        clusterAudio.preload = 'auto';
+        window.hasPlayedCluster = false; 
 
         function initLandingParticles() {
             if (!lpCanvas) return;
@@ -443,10 +400,7 @@
             if (!lpCtx || activePageIndex !== 0) return;
             lpCtx.clearRect(0, 0, lpCanvas.width, lpCanvas.height);
             landingParticlesArray.forEach(p => {
-                p.x += p.vx;
-                p.y += p.vy;
-                p.alpha += p.dAlpha;
-
+                p.x += p.vx; p.y += p.vy; p.alpha += p.dAlpha;
                 if (p.alpha <= 0.1 || p.alpha >= 0.8) p.dAlpha *= -1;
                 if (p.x < 0) p.x = lpCanvas.width;
                 if (p.x > lpCanvas.width) p.x = 0;
@@ -476,6 +430,247 @@
             }
         });
 
+        function playPopSound() {
+            try {
+                const a = popAudios[Math.floor(Math.random() * popAudios.length)].cloneNode();
+                a.volume = 0.6;
+                a.play().catch(e=>{});
+            } catch(e) {}
+        }
+
+        function playFireworkSound() {
+            try {
+                const a = fwAudios[Math.floor(Math.random() * fwAudios.length)].cloneNode();
+                a.volume = 0.25;
+                a.play().catch(e=>{});
+            } catch(e) {}
+        }
+
+        function finishCountdown() {
+            if(countdownInterval) clearInterval(countdownInterval);
+            const container = document.getElementById("countdown-container");
+            if(container) { 
+                container.innerHTML = `<div style="font-family: 'Dancing Script', cursive; font-size: clamp(3rem, 8vw, 6rem); color: var(--gold); text-shadow: 0 0 20px rgba(197,160,89,0.5);">It's Your Day!</div>`; 
+            }
+        }
+
+        function showLogin() {
+            const overlay = document.getElementById('login-overlay');
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.style.opacity = '1', 10);
+            activePageIndex = 1;
+        }
+
+        function hideLogin() {
+            const overlay = document.getElementById('login-overlay');
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.style.display = 'none', 500);
+            activePageIndex = 0;
+        }
+
+        function handlePwKey(e) { if(e.key === "Enter") checkPassword(); }
+
+        function checkPassword() {
+            const input = document.getElementById('pw-input').value;
+            const error = document.getElementById('error-msg');
+            
+            if (input === "admin123" || input === "HBDLEON" || input === "Leonita123") {
+                currentPassword = input;
+                error.style.display = 'none';
+
+                const navContainer = document.getElementById('nav-container');
+                const fwdBtn = document.getElementById('fwd-btn');
+                const romMsg = document.getElementById('romantic-message');
+                const genMsg = document.getElementById('generic-message');
+                const fwBtn = document.getElementById('final-wish-btn');
+
+                if (romMsg) romMsg.style.display = 'block';
+                if (genMsg) genMsg.style.display = 'none';
+                if (navContainer) navContainer.style.display = 'none';
+
+                if (input === "admin123") {
+                    accessLevel = "full"; 
+                    adminBypassCountdown = true; 
+                    finishCountdown();
+                    if (navContainer) navContainer.style.display = 'flex'; 
+                    if (fwdBtn) fwdBtn.classList.remove('disabled');
+                } else if (input === "HBDLEON") { 
+                    accessLevel = "full"; 
+                    if (navContainer) navContainer.style.display = 'none'; 
+                } else if (input === "Leonita123") { 
+                    accessLevel = "basic"; 
+                    if (navContainer) navContainer.style.display = 'none'; 
+                    if (romMsg) romMsg.style.display = 'none';
+                    if (genMsg) genMsg.style.display = 'block';
+                    if (fwBtn) fwBtn.style.display = 'inline-block'; 
+                }
+                
+                startJourney(); 
+            } else { 
+                error.style.display = 'block'; 
+            }
+        }
+
+        function startJourney() {
+            const landing = document.getElementById('page-landing');
+            const overlay = document.getElementById('login-overlay');
+            const cLink = document.getElementById('my-console-link');
+            
+            overlay.style.opacity = '0';
+            landing.style.opacity = '0';
+            if (cLink) cLink.style.opacity = '0'; 
+            
+            const bgMusic = document.getElementById('bg-music');
+            if (bgMusic) {
+                bgMusic.volume = 0; 
+                bgMusic.play().then(() => {
+                    let vol = 0;
+                    const fadeInt = setInterval(() => {
+                        if (vol < 0.5) {
+                            vol += 0.01; 
+                            bgMusic.volume = Math.min(vol, 0.5);
+                        } else {
+                            clearInterval(fadeInt); 
+                        }
+                    }, 50); 
+                }).catch(e => console.log("Auto-play diblokir browser:", e));
+            }
+
+            setTimeout(() => { 
+                landing.style.display = 'none'; 
+                overlay.style.display = 'none'; 
+                if(cLink) cLink.style.display = 'none'; 
+                document.getElementById('game-session').style.display = 'flex'; 
+                initGameBokeh(); 
+                gameActive = true; 
+                spawnLoop(); 
+                activePageIndex = 2;
+            }, 1000);
+        }
+
+        function initGameBokeh() {
+            const container = document.getElementById('bokeh-container');
+            for(let i=0; i<15; i++) {
+                const b = document.createElement('div');
+                b.className = 'bokeh';
+                const size = Math.random() * 150 + 50;
+                b.style.width = size + 'px'; b.style.height = size + 'px';
+                b.style.left = Math.random() * 100 + '%'; b.style.top = Math.random() * 100 + '%';
+                b.style.animationDelay = (Math.random() * 5) + 's';
+                b.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(b);
+            }
+        }
+
+        function spawnLoop() { if(!gameActive) return; createBalloon('game'); setTimeout(spawnLoop, Math.max(150, 600 - (popped * 25))); }
+
+        function createBalloon(type) {
+            const container = document.getElementById('balloon-container');
+            const wrap = document.createElement('div');
+            wrap.className = 'balloon-wrapper';
+            const color = colors[Math.floor(Math.random()*colors.length)];
+            wrap.style.left = (Math.random() * 80 + 10) + 'vw';
+            wrap.style.bottom = '-120px';
+            wrap.style.color = color;
+            wrap.innerHTML = `<div class="balloon" style="background:${color};"></div><svg class="string-svg" viewBox="0 0 40 100"><path d="M20,0 Q35,25 20,50 T20,100" stroke="rgba(0,0,0,0.15)" fill="none" stroke-width="2"/></svg>`;
+            wrap.onclick = (e) => {
+                playPopSound();
+                confetti({ origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight }, colors: [color, '#ffffff'], particleCount: 30, zIndex: 10000 });
+                wrap.remove();
+                if(type === 'game' && gameActive) { popped++; document.getElementById('pop-count').innerText = popped; if(popped >= 20) triggerFinale(); }
+            };
+            const dur = type === 'game' ? 3000 : 8000;
+            wrap.animate([{ bottom: '-120px' }, { bottom: '120vh' }], { duration: dur, easing: 'linear' }).onfinish = () => wrap.remove();
+            container.appendChild(wrap);
+        }
+
+        // --- FUNGSI PRELOAD GAMBAR UNTUK LOADING SCREEN ---
+        function preloadImages(urls) {
+            return Promise.all(urls.map(url => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.src = url;
+                    img.onload = resolve;
+                    img.onerror = resolve; // Lanjut meskipun ada gambar gagal dimuat
+                });
+            }));
+        }
+
+        function triggerFinale() {
+            gameActive = false;
+            setTimeout(() => {
+                document.getElementById('game-session').style.opacity = '0';
+                setTimeout(() => { 
+                    document.getElementById('game-session').style.display = 'none'; 
+                    
+                    // --- MUNCULKAN LOADING SCREEN ---
+                    const loader = document.getElementById('loading-screen');
+                    loader.style.display = 'flex';
+                    setTimeout(() => loader.style.opacity = '1', 50);
+
+                    // Mulai Preload Semua Foto
+                    preloadImages(photos).then(() => {
+                        // Hilangkan loading screen dengan efek memudar
+                        loader.style.opacity = '0';
+                        setTimeout(() => {
+                            loader.style.display = 'none';
+                            activePageIndex = 3;
+                            
+                            // Lanjut ke perayaan foto
+                            document.body.classList.add('allow-scroll'); 
+                            const celeb = document.getElementById('page-celebration'); 
+                            celeb.style.display = 'block'; 
+                            setTimeout(() => { celeb.style.opacity = '1'; }, 50); 
+                            
+                            initHeart(); 
+                            startObservers(); 
+                            setInterval(() => createBalloon('bg'), 2000); 
+                        }, 1000);
+                    });
+                    
+                }, 2000);
+            }, 1000);
+        }
+
+        function initHeart() {
+            const container = document.getElementById('heart-gallery');
+            photos.forEach((src, i) => {
+                const t = (i / photos.length) * (2 * Math.PI);
+                const x = 16 * Math.pow(Math.sin(t), 3) * 18;
+                const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * 18;
+                const card = document.createElement('div');
+                card.className = 'polaroid';
+                card.style.left = `calc(50% + ${x}px - 45px)`; card.style.top = `calc(50% + ${y}px - 45px)`;
+                card.innerHTML = `<img src="${src}">`;
+                container.appendChild(card);
+            });
+        }
+
+        function startObservers() {
+            let started = false;
+            const obs = new IntersectionObserver((entries) => { 
+                if(entries[0].isIntersecting && !started) { 
+                    started = true; 
+                    if(accessLevel === "full") {
+                        if (currentPassword === "admin123") {
+                            document.getElementById('typewriter-display').textContent = fullText;
+                            document.getElementById('typewriter-cursor').style.display = 'none';
+                            document.getElementById('final-wish-btn').style.display = 'inline-block';
+                        } else {
+                            typeWriter(0); 
+                        }
+                    }
+                } 
+            }, { threshold: 0.5 });
+            obs.observe(document.getElementById('trigger-box'));
+        }
+
+        function typeWriter(i) {
+            const d = document.getElementById('typewriter-display');
+            if (i < fullText.length) { d.textContent += fullText.charAt(i); setTimeout(() => typeWriter(i + 1), 25); }
+            else { document.getElementById('typewriter-cursor').style.display = 'none'; document.getElementById('final-wish-btn').style.display = 'inline-block'; }
+        }
+
         function openLightbox(src) {
             const lb = document.getElementById('lightbox');
             if(!lb) return;
@@ -495,272 +690,53 @@
         function clearAllIntervals() {
             if(window.balloonInt) { clearInterval(window.balloonInt); window.balloonInt = null; }
             if(window.fwInt) { clearInterval(window.fwInt); window.fwInt = null; }
-            if(twTimeout) { clearTimeout(twTimeout); twTimeout = null; }
-            bgFireworks = []; textFireworks = [];
-        }
-
-        function showLogin() {
-            const overlay = document.getElementById('login-overlay');
-            if(overlay) {
-                overlay.style.display = 'flex';
-                setTimeout(() => overlay.style.opacity = '1', 10);
-                activePageIndex = 1;
-            }
-        }
-
-        function hideLogin() {
-            const overlay = document.getElementById('login-overlay');
-            if(overlay) {
-                overlay.style.opacity = '0';
-                setTimeout(() => overlay.style.display = 'none', 500);
-                activePageIndex = 0;
-            }
-        }
-
-        function handlePwKey(e) { if(e.key === "Enter") checkPassword(); }
-
-        function checkPassword() {
-            initAudio();
-            const input = document.getElementById('pw-input').value;
-            const error = document.getElementById('error-msg');
-            
-            if (input === "admin123" || input === "HBDLEON" || input === "Leonita123") {
-                currentPassword = input;
-                const navContainer = document.getElementById('nav-container');
-                if (navContainer) navContainer.style.display = 'flex';
-                
-                const fwdBtn = document.getElementById('fwd-btn');
-                if (input === "admin123") {
-                    accessLevel = "full"; adminBypassCountdown = true; finishCountdown();
-                    if (fwdBtn) fwdBtn.classList.remove('disabled');
-                } else if (input === "HBDLEON") {
-                    accessLevel = "full";
-                    if (fwdBtn) fwdBtn.classList.add('disabled');
-                } else {
-                    accessLevel = "basic";
-                    if (fwdBtn) fwdBtn.classList.add('disabled');
-                    const romMsg = document.getElementById('romantic-message'), genMsg = document.getElementById('generic-message'), fwBtn = document.getElementById('final-wish-btn');
-                    if (romMsg) romMsg.style.display = 'none';
-                    if (genMsg) genMsg.style.display = 'block';
-                    if (fwBtn) fwBtn.style.display = 'inline-block';
-                }
-                startJourney();
-            } else { if(error) error.style.display = 'block'; }
-        }
-
-        function movePage(step) {
-            if (step === 1 && currentPassword !== "admin123") return;
-            let nextIndex = activePageIndex + step;
-            if (nextIndex >= 0 && nextIndex < pageFlow.length) {
-                activePageIndex = nextIndex;
-                const targetId = pageFlow[activePageIndex];
-                clearAllIntervals();
-                gameActive = false; 
-                const bc = document.getElementById('balloon-container');
-                if (bc) bc.innerHTML = '';
-                const cLink = document.getElementById('my-console-link');
-                if (cLink) {
-                    if (nextIndex < 2) { cLink.style.display = 'flex'; setTimeout(() => cLink.style.opacity = '1', 50); } 
-                    else { cLink.style.opacity = '0'; setTimeout(() => cLink.style.display = 'none', 300); }
-                }
-                pageFlow.forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) { el.style.transition = 'none'; el.style.opacity = '0'; el.style.display = 'none'; setTimeout(() => { el.style.transition = ''; }, 50); }
-                });
-                const targetEl = document.getElementById(targetId);
-                if (targetEl) {
-                    targetEl.style.display = (targetId === 'page-celebration' || targetId === 'page-surprise') ? 'block' : 'flex';
-                    setTimeout(() => targetEl.style.opacity = '1', 50);
-                }
-                if (targetId === 'page-landing' || targetId === 'login-overlay') { 
-                    document.body.classList.remove('allow-scroll'); window.scrollTo(0, 0); 
-                    if (targetId === 'page-landing') { initLandingParticles(); animateLandingParticles(); }
-                } 
-                else if (targetId === 'game-session') { gameActive = true; popped = 0; document.getElementById('pop-count').innerText = 0; initGameBokeh(); spawnLoop(); } 
-                else if (targetId === 'page-celebration') { document.body.classList.add('allow-scroll'); initHeart(); startObservers(); } 
-                else if (targetId === 'page-surprise') { document.body.classList.remove('allow-scroll'); goToNightScene(); }
-            }
-        }
-
-        function startJourney() {
-            initAudio();
-            
-            const bgMusic = document.getElementById('bg-music');
-            if (bgMusic) {
-                bgMusic.volume = 0.5; 
-                bgMusic.play().catch(e => console.log("Auto-play audio diblokir:", e));
-            }
-
-            const landing = document.getElementById('page-landing'), overlay = document.getElementById('login-overlay'), cLink = document.getElementById('my-console-link');
-            if (overlay) overlay.style.opacity = '0';
-            if (landing) landing.style.opacity = '0';
-            if (cLink) cLink.style.opacity = '0'; 
-            setTimeout(() => { 
-                if(landing) landing.style.display = 'none'; 
-                if(overlay) overlay.style.display = 'none'; 
-                if(cLink) cLink.style.display = 'none'; 
-                document.getElementById('game-session').style.display = 'flex'; 
-                initGameBokeh(); gameActive = true; spawnLoop(); activePageIndex = 2; 
-            }, 1000);
-        }
-
-        function initGameBokeh() {
-            const container = document.getElementById('bokeh-container');
-            if(!container) return;
-            container.innerHTML = '';
-            for(let i=0; i<15; i++) {
-                const b = document.createElement('div');
-                b.className = 'bokeh';
-                const size = Math.random() * 150 + 50;
-                b.style.width = size + 'px'; b.style.height = size + 'px';
-                b.style.left = Math.random() * 100 + '%'; b.style.top = Math.random() * 100 + '%';
-                b.style.animationDelay = (Math.random() * 5) + 's';
-                b.style.animationDuration = (Math.random() * 10 + 10) + 's';
-                container.appendChild(b);
-            }
-        }
-
-        function spawnLoop() { if(!gameActive) return; createBalloon('game'); setTimeout(spawnLoop, Math.max(150, 600 - (popped * 25))); }
-
-        function createBalloon(type) {
-            const container = document.getElementById('balloon-container');
-            if(!container) return;
-            const wrap = document.createElement('div'), color = colors[Math.floor(Math.random()*colors.length)];
-            wrap.className = 'balloon-wrapper'; wrap.style.left = (Math.random() * 80 + 10) + 'vw'; wrap.style.bottom = '-120px'; wrap.style.color = color;
-            wrap.innerHTML = `<div class="balloon" style="background:${color};"></div><svg class="string-svg" viewBox="0 0 40 100"><path d="M20,0 Q35,25 20,50 T20,100" stroke="rgba(0,0,0,0.15)" fill="none" stroke-width="2"/></svg>`;
-            wrap.onclick = (e) => {
-                playPopSound();
-                confetti({ origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight }, colors: [color, '#ffffff'], particleCount: 30, zIndex: 10000 });
-                wrap.remove();
-                if(type === 'game' && gameActive) { popped++; document.getElementById('pop-count').innerText = popped; if(popped >= 20) triggerFinale(); }
-            };
-            const dur = type === 'game' ? 3000 : 8000;
-            wrap.animate([{ bottom: '-120px' }, { bottom: '120vh' }], { duration: dur, easing: 'linear' }).onfinish = () => wrap.remove();
-            container.appendChild(wrap);
-        }
-
-        function triggerFinale() {
-            gameActive = false; activePageIndex = 3;
-            setTimeout(() => {
-                const gs = document.getElementById('game-session');
-                if(gs) gs.style.opacity = '0';
-                setTimeout(() => { 
-                    if(gs) gs.style.display = 'none'; 
-                    document.body.classList.add('allow-scroll'); 
-                    const celeb = document.getElementById('page-celebration'); 
-                    if(celeb) { celeb.style.display = 'block'; celeb.style.opacity = '1'; }
-                    initHeart(); startObservers(); clearAllIntervals();
-                }, 2000);
-            }, 1000);
-        }
-
-        function initHeart() {
-            const container = document.getElementById('heart-gallery');
-            if (!container || container.children.length > 1) return;
-            
-            photos.forEach((src, i) => {
-                const t = (i / photos.length) * (2 * Math.PI);
-                const x = 16 * Math.pow(Math.sin(t), 3) * 18, y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * 18;
-                
-                const card = document.createElement('div');
-                card.className = 'polaroid'; 
-                card.style.left = `calc(50% + ${x}px - 45px)`; 
-                card.style.top = `calc(50% + ${y}px - 45px)`;
-                card.setAttribute('onclick', `openLightbox('${src}')`);
-                card.innerHTML = `<img src="${src}">`;
-                container.appendChild(card);
-            });
-        }
-
-        function startObservers() {
-            if (twObserver) twObserver.disconnect();
-            if (twTimeout) clearTimeout(twTimeout);
-            const disp = document.getElementById('typewriter-display'), curs = document.getElementById('typewriter-cursor');
-            if(disp) disp.textContent = ''; if(curs) curs.style.display = 'inline-block';
-            let started = false;
-            twObserver = new IntersectionObserver((entries) => { 
-                if(entries[0].isIntersecting && !started) { 
-                    started = true; 
-                    if(accessLevel === "full") {
-                        if (currentPassword === "admin123") {
-                            if(disp) disp.textContent = fullText; if(curs) curs.style.display = 'none';
-                            const btn = document.getElementById('final-wish-btn'); if(btn) btn.style.display = 'inline-block';
-                        } else { typeWriter(0); }
-                    }
-                } 
-            }, { threshold: 0.5 });
-            const trigger = document.getElementById('trigger-box');
-            if(trigger) twObserver.observe(trigger);
-        }
-
-        function typeWriter(i) {
-            const d = document.getElementById('typewriter-display');
-            if (d && i < fullText.length) { d.textContent += fullText.charAt(i); twTimeout = setTimeout(() => typeWriter(i + 1), 25); } 
-            else if (d) { 
-                const cur = document.getElementById('typewriter-cursor'); if(cur) cur.style.display = 'none'; 
-                const btn = document.getElementById('final-wish-btn'); if(btn) btn.style.display = 'inline-block'; 
-            }
         }
 
         function goToNightScene() {
             activePageIndex = 4;
-            const celeb = document.getElementById('page-celebration'); if(celeb) celeb.style.opacity = '0';
-            clearAllIntervals();
-            setTimeout(() => { 
-                window.scrollTo(0,0); document.body.classList.remove('allow-scroll'); 
-                const p = document.getElementById('page-surprise'); if(p) { p.style.display = 'flex'; p.style.opacity = '1'; }
-                initNightStars(); setTimeout(initShootingStarSequence, 1500); 
-            }, 1000);
+            document.getElementById('page-celebration').style.opacity = '0';
+            setTimeout(() => { window.scrollTo(0,0); document.body.classList.remove('allow-scroll'); const p = document.getElementById('page-surprise'); p.style.display = 'flex'; p.style.opacity = '1'; initNightStars(); setTimeout(initShootingStarSequence, 1500); }, 1000);
         }
 
+        const ariesStars = [{x: 0.50, y: 0.40, r: 4}, {x: 0.58, y: 0.47, r: 3}, {x: 0.63, y: 0.60, r: 2}, {x: 0.73, y: 0.70, r: 2.5}];
+
         function initNightStars() {
-            const c = document.getElementById('stars-night'); if(!c) return; const ctx = c.getContext('2d');
+            const c = document.getElementById('stars-night'); const ctx = c.getContext('2d');
             c.width = window.innerWidth; c.height = window.innerHeight;
             let stars = Array(250).fill().map(() => ({ x: Math.random()*c.width, y: Math.random()*c.height, o: Math.random(), s: Math.random()*0.015, r: Math.random()*1.5 + 0.5 }));
             function draw() { 
                 if (activePageIndex !== 4) return;
                 ctx.clearRect(0,0,c.width, c.height); 
                 stars.forEach(s => { ctx.fillStyle = `rgba(255,255,255,${s.o})`; ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill(); s.o += s.s; if(s.o > 1 || s.o < 0) s.s = -s.s; }); 
-                ariesStars.forEach(s => { 
-                    const x = s.x * c.width, y = s.y * c.height, baseR = 1.5 + (s.r - 1.5) * ariesHighlight; 
-                    if (ariesHighlight > 0) {
-                        ctx.beginPath(); const glow = ctx.createRadialGradient(x, y, baseR, x, y, baseR * 4);
-                        glow.addColorStop(0, `rgba(255, 240, 200, ${0.8 * ariesHighlight})`); glow.addColorStop(1, 'rgba(255, 240, 200, 0)');
-                        ctx.fillStyle = glow; ctx.arc(x, y, baseR * 4, 0, Math.PI*2); ctx.fill();
-                    }
-                    ctx.beginPath(); ctx.fillStyle = `rgba(255, 255, 255, ${0.6 + 0.4 * ariesHighlight})`; ctx.shadowBlur = 15 * ariesHighlight; ctx.shadowColor = '#ffffff';
-                    ctx.arc(x, y, baseR, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
-                });
+                ariesStars.forEach(s => { ctx.fillStyle = '#fff'; ctx.shadowBlur = 10; ctx.shadowColor = 'white'; ctx.beginPath(); ctx.arc(s.x * c.width, s.y * c.height, s.r, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0; });
                 requestAnimationFrame(draw); 
             }
             draw();
         }
 
+        let bgFireworks = [];
         function createBGFirework() {
-            if(!bgFwCanvas) return;
-            playFireworkSound(); 
-            const x = Math.random() * bgFwCanvas.width, y = Math.random() * (bgFwCanvas.height * 0.5) + (bgFwCanvas.height * 0.1);
-            const color = colors[Math.floor(Math.random() * colors.length)], particles = [];
+            const x = Math.random() * bgFwCanvas.width;
+            const y = Math.random() * (bgFwCanvas.height * 0.5) + (bgFwCanvas.height * 0.1);
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const particles = [];
             for(let i=0; i<60; i++) {
-                const angle = Math.random() * Math.PI * 2, speed = Math.random() * 5 + 2;
-                particles.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: 1.0, decay: Math.random() * 0.015 + 0.01, color: Math.random() > 0.5 ? color : '#ffffff' });
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 4 + 2;
+                particles.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: 1.0, decay: Math.random() * 0.02 + 0.01 });
             }
-            bgFireworks.push({ particles });
+            bgFireworks.push({ particles, color });
+            playFireworkSound();
         }
 
         function animateBGFireworks() {
-            if (activePageIndex !== 4 || !bgFwCtx) return;
+            if (activePageIndex !== 4) return;
             bgFwCtx.clearRect(0, 0, bgFwCanvas.width, bgFwCanvas.height);
-            if(bgFwCanvas.width !== window.innerWidth) bgFwCanvas.width = window.innerWidth;
-            if(bgFwCanvas.height !== window.innerHeight) bgFwCanvas.height = window.innerHeight;
+            bgFwCanvas.width = window.innerWidth; bgFwCanvas.height = window.innerHeight;
             bgFireworks.forEach((fw, fIdx) => {
                 fw.particles.forEach((p) => {
-                    p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.vx *= 0.98; p.vy *= 0.98; p.life -= p.decay;
-                    if(p.life > 0) { 
-                        bgFwCtx.beginPath(); bgFwCtx.moveTo(p.x, p.y); bgFwCtx.lineTo(p.x - p.vx * 2.5, p.y - p.vy * 2.5);
-                        bgFwCtx.strokeStyle = p.color; bgFwCtx.lineWidth = 2; bgFwCtx.lineCap = 'round';
-                        bgFwCtx.globalAlpha = Math.max(0, p.life); bgFwCtx.stroke(); 
-                    }
+                    p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.life -= p.decay;
+                    if(p.life > 0) { bgFwCtx.globalAlpha = p.life; bgFwCtx.fillStyle = fw.color; bgFwCtx.beginPath(); bgFwCtx.arc(p.x, p.y, 1.5, 0, Math.PI * 2); bgFwCtx.fill(); }
                 });
                 if(fw.particles.every(p => p.life <= 0)) bgFireworks.splice(fIdx, 1);
             });
@@ -768,80 +744,108 @@
         }
 
         function initShootingStarSequence() {
-            const c = document.getElementById('shooting-star-canvas'); if(!c) return; const ctx = c.getContext('2d');
+            const c = document.getElementById('shooting-star-canvas'); const ctx = c.getContext('2d');
             c.width = window.innerWidth; c.height = window.innerHeight;
             
             const targetX = c.width / 2;
             const targetY = c.height / 2;
-            let ssX = c.width + 100;
-            let ssY = -100;
+            const startX = c.width + 100;
+            const startY = -100;
+            
+            let ssX = startX;
+            let ssY = startY;
             
             const dx = targetX - ssX;
             const dy = targetY - ssY;
             const dist = Math.sqrt(dx*dx + dy*dy);
-            const speed = 9; 
+            const speed = 12; 
             const vx = (dx / dist) * speed;
             const vy = (dy / dist) * speed;
 
-            let ssActive = true, starPath = [], clingAlpha = 0, clingTriggered = false, particles = [];
+            let ssActive = true, starPath = [];
+            let clingState = 0; 
+            let clingAlpha = 0;
             
             function animate() { 
-                if ((activePageIndex !== 4 || !ssActive) && particles.length === 0 && clingAlpha <= 0) return;
-                ctx.clearRect(0,0,c.width, c.height); 
-                if (ssActive) {
-                    ssX += vx; ssY += vy;
-                    starPath.push({x: ssX, y: ssY}); if(starPath.length > 25) starPath.shift();
-                    if(starPath.length > 1) {
-                        ctx.beginPath(); ctx.moveTo(starPath[starPath.length-1].x, starPath[starPath.length-1].y);
-                        for(let i = starPath.length - 2; i >= 0; i--) { ctx.lineTo(starPath[i].x, starPath[i].y); }
-                        const g = ctx.createLinearGradient(ssX, ssY, starPath[0].x, starPath[0].y);
-                        g.addColorStop(0, 'rgba(255, 255, 255, 1)'); g.addColorStop(0.3, 'rgba(255, 230, 150, 0.6)'); g.addColorStop(1, 'rgba(255, 255, 255, 0)'); 
-                        ctx.strokeStyle = g; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.stroke(); 
-                    }
-                    if (ssX <= targetX && !clingTriggered) { clingAlpha = 1; clingTriggered = true; }
-                    if (clingAlpha > 0) {
-                        const shineLen = 150 * clingAlpha; ctx.save(); ctx.translate(ssX, ssY); ctx.rotate(Math.PI/4);
-                        ctx.strokeStyle = `rgba(255, 255, 255, ${clingAlpha})`; ctx.lineWidth = 3;
-                        ctx.beginPath(); ctx.moveTo(-shineLen, 0); ctx.lineTo(shineLen, 0);
-                        ctx.moveTo(0, -shineLen); ctx.lineTo(0, shineLen); ctx.stroke();
-                        ctx.rotate(-Math.PI/4); ctx.beginPath();
-                        ctx.moveTo(-shineLen*1.5, 0); ctx.lineTo(shineLen*1.5, 0);
-                        ctx.moveTo(0, -shineLen*1.5); ctx.lineTo(0, shineLen*1.5); ctx.stroke();
-                        ctx.restore(); clingAlpha -= 0.02;
-                    }
-                    ctx.beginPath(); ctx.arc(ssX, ssY, 6, 0, Math.PI * 2); ctx.fillStyle = 'white'; ctx.shadowBlur = 30; ctx.shadowColor = 'white'; ctx.fill(); ctx.shadowBlur = 0;
-                    if (Math.random() > 0.2) { particles.push({ x: ssX, y: ssY, vx: (Math.random() - 0.5) * 4, vy: (Math.random() - 0.5) * 4, life: 1, decay: Math.random() * 0.02 + 0.015, size: Math.random() * 3 + 1 }); }
-                    if(ssX < -600) { ssActive = false; showWishUI(); } 
+                if(!ssActive || activePageIndex !== 4) return; 
+                ctx.clearRect(0, 0, c.width, c.height); 
+                
+                ssX += vx; ssY += vy; 
+                
+                starPath.push({x: ssX, y: ssY}); 
+                if(starPath.length > 25) starPath.shift();
+                
+                if(starPath.length > 1) {
+                    ctx.beginPath(); ctx.moveTo(starPath[starPath.length-1].x, starPath[starPath.length-1].y);
+                    for(let i = starPath.length - 2; i >= 0; i--) { ctx.lineTo(starPath[i].x, starPath[i].y); }
+                    const g = ctx.createLinearGradient(ssX, ssY, starPath[0].x, starPath[0].y);
+                    g.addColorStop(0, 'white'); g.addColorStop(0.3, 'rgba(255, 230, 150, 0.6)'); g.addColorStop(1, 'transparent'); 
+                    ctx.strokeStyle = g; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.stroke(); 
                 }
-                for (let i = particles.length - 1; i >= 0; i--) {
-                    let p = particles[i]; p.x += p.vx; p.y += p.vy; p.life -= p.decay;
-                    if (p.life <= 0) { particles.splice(i, 1); } 
-                    else { ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fillStyle = `rgba(255, 250, 210, ${p.life})`; ctx.fill(); }
+
+                if (ssX <= targetX && clingState === 0) { 
+                    clingState = 1; 
                 }
-                requestAnimationFrame(animate); 
+
+                if (clingState === 1) {
+                    clingAlpha += 0.05;
+                    if (clingAlpha >= 1) { clingAlpha = 1; clingState = 2; }
+                } else if (clingState === 2) {
+                    clingAlpha -= 0.02;
+                    if (clingAlpha <= 0) { clingAlpha = 0; clingState = 3; }
+                }
+
+                if (clingAlpha > 0) {
+                    const shineLen = 150 * clingAlpha; 
+                    ctx.save(); 
+                    ctx.translate(ssX, ssY); 
+                    ctx.rotate(Math.PI/4); 
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${clingAlpha})`; 
+                    ctx.lineWidth = 3;
+                    ctx.shadowBlur = 15 * clingAlpha; 
+                    ctx.shadowColor = "white";
+                    
+                    ctx.beginPath(); ctx.moveTo(-shineLen, 0); ctx.lineTo(shineLen, 0); ctx.stroke();
+                    ctx.rotate(Math.PI/2); 
+                    ctx.beginPath(); ctx.moveTo(-shineLen, 0); ctx.lineTo(shineLen, 0); ctx.stroke();
+                    
+                    ctx.restore(); 
+                }
+                
+                ctx.beginPath(); ctx.arc(ssX, ssY, 6, 0, Math.PI * 2); ctx.fillStyle = 'white'; ctx.shadowBlur = 30; ctx.shadowColor = 'white'; ctx.fill(); ctx.shadowBlur = 0; 
+                
+                if(ssX < -600) { 
+                    ssActive = false; 
+                    showWishUI(); 
+                } else {
+                    requestAnimationFrame(animate); 
+                }
             }
             animate();
         }
 
         function showWishUI() {
-            const wt = document.getElementById('wish-title'); if (wt) wt.style.opacity = '1';
-            setTimeout(() => { const b = document.getElementById('done-btn'); if(b) { b.style.display = 'inline-block'; setTimeout(() => b.style.opacity = '1', 50); } }, 1500);
+            document.getElementById('wish-title').style.opacity = '1';
+            setTimeout(() => { const b = document.getElementById('done-btn'); b.style.display = 'inline-block'; setTimeout(() => b.style.opacity = '1', 50); }, 1500);
         }
 
+        let textFireworks = []; 
         function handleDoneWish() {
-            const wt = document.getElementById('wish-title'); if(wt) wt.style.opacity = '0';
-            const db = document.getElementById('done-btn'); if(db) db.style.opacity = '0';
+            document.getElementById('wish-title').style.opacity = '0';
+            document.getElementById('done-btn').style.opacity = '0';
             setTimeout(() => {
-                if(wt) wt.style.display = 'none'; if(db) db.style.display = 'none';
-                animateBGFireworks(); window.fwInt = setInterval(createBGFirework, 800);
-                launchFireworksSimultaneously("HAPPY BIRTHDAY!"); requestAnimationFrame(mainTextLoop);
+                document.getElementById('wish-title').style.display = 'none';
+                document.getElementById('done-btn').style.display = 'none';
+                animateBGFireworks();
+                window.fwInt = setInterval(createBGFirework, 800);
+                launchFireworksSimultaneously("HAPPY BIRTHDAY LEON!"); 
+                requestAnimationFrame(mainTextLoop);
             }, 1000);
         }
 
         function launchFireworksSimultaneously(text) {
-            if (!fwCanvas || !fwCtx) return;
             fwCanvas.width = window.innerWidth; fwCanvas.height = window.innerHeight;
-            const fontSize = Math.min(fwCanvas.width / 12, 85);
+            const fontSize = Math.min(fwCanvas.width / 14, 70); 
             fwCtx.font = `bold italic ${fontSize}px 'Cormorant Garamond'`;
             
             const offCanvas = document.createElement('canvas');
@@ -849,7 +853,8 @@
             const offCtx = offCanvas.getContext('2d', {willReadFrequently: true});
             offCtx.font = fwCtx.font; offCtx.fillStyle = '#ffffff'; offCtx.textBaseline = 'alphabetic';
 
-            let currentX = (fwCanvas.width - fwCtx.measureText(text).width) / 2;
+            const totalWidth = fwCtx.measureText(text).width;
+            let currentX = (fwCanvas.width - totalWidth) / 2;
             const centerY = fwCanvas.height * 0.45;
             textFireworks = [];
             
@@ -892,12 +897,13 @@
         }
 
         function mainTextLoop(now) {
-            if (activePageIndex !== 4 || !fwCtx) return;
+            if (activePageIndex !== 4) return;
             fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
             let anyActive = false;
             textFireworks.forEach(f => {
                 if(!f.exploded) {
-                    anyActive = true; f.trail.push({x: f.x + f.fontSize/3, y: f.ry}); if (f.trail.length > 8) f.trail.shift();
+                    anyActive = true; 
+                    f.trail.push({x: f.x + f.fontSize/3, y: f.ry}); if (f.trail.length > 8) f.trail.shift();
                     if (f.trail.length > 1) {
                         fwCtx.beginPath(); fwCtx.moveTo(f.trail[0].x, f.trail[0].y);
                         for(let i=1; i<f.trail.length; i++) { fwCtx.lineTo(f.trail[i].x, f.trail[i].y); }
@@ -907,7 +913,14 @@
                     f.ry -= 15; 
                     if(f.ry <= f.targetY) { 
                         f.exploded = true; f.startTime = now; 
-                        playFireworkSound(); 
+                        
+                        if (!window.hasPlayedCluster) {
+                            const ca = clusterAudio.cloneNode();
+                            ca.volume = 0.6; 
+                            ca.play().catch(e => console.log("Audio diblokir:", e));
+                            window.hasPlayedCluster = true; 
+                        }
+
                         for(let i=0; i<40; i++) {
                             const angle = Math.random() * Math.PI * 2, speed = Math.random() * 6 + 2;
                             f.particles.push({ x: f.x + f.fontSize/3, y: f.targetY, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, life: 1.0, decay: Math.random()*0.015 + 0.01, color: Math.random() > 0.5 ? f.color : '#ffffff' });
@@ -917,7 +930,7 @@
                     const elapsed = now - f.startTime;
                     f.particles.forEach(p => {
                         if (p.life > 0) {
-                            anyActive = true; p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.vx *= 0.98; p.vy *= 0.98; p.life -= p.decay;
+                            anyActive = true; p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.vx *= 0.98; p.vx *= 0.98; p.life -= p.decay;
                             fwCtx.beginPath(); fwCtx.moveTo(p.x, p.y); fwCtx.lineTo(p.x - p.vx * 2.5, p.y - p.vy * 2.5);
                             fwCtx.strokeStyle = p.color; fwCtx.lineWidth = 1.2; fwCtx.lineCap = 'round'; fwCtx.globalAlpha = Math.max(0, p.life); fwCtx.stroke();
                         }
@@ -950,108 +963,170 @@
             if(anyActive) requestAnimationFrame(mainTextLoop); else setTimeout(startScroller, 800);
         }
 
+        let isUserScrolling = false;
+        let scrollTimeout;
+        let scrollPos = 0;
+        let autoScrollActive = false;
+        let scrollerInitialized = false;
+
         function startScroller() {
-            const s = document.getElementById('friends-wishes-scene'), container = document.getElementById('wishes-scroller-container');
-            if(!s || !container) return;
-            s.style.display = 'flex'; autoScrollActive = true;
+            const s = document.getElementById('friends-wishes-scene');
+            const container = document.getElementById('wishes-scroller-container');
+            
+            s.style.display = 'flex';
+            autoScrollActive = true;
+
             if(!scrollerInitialized) {
-                const handleActivity = () => { isUserScrolling = true; clearTimeout(scrollTimeout); scrollTimeout = setTimeout(() => { isUserScrolling = false; scrollPos = container.scrollTop; }, 100); };
-                container.addEventListener('wheel', handleActivity); container.addEventListener('touchstart', handleActivity); container.addEventListener('touchmove', handleActivity); scrollerInitialized = true;
+                const handleActivity = () => {
+                    isUserScrolling = true;
+                    clearTimeout(scrollTimeout);
+                    scrollTimeout = setTimeout(() => {
+                        isUserScrolling = false;
+                        scrollPos = container.scrollTop;
+                    }, 500); 
+                };
+                container.addEventListener('wheel', handleActivity);
+                container.addEventListener('touchstart', handleActivity);
+                container.addEventListener('touchmove', handleActivity);
+                scrollerInitialized = true;
             }
-            setTimeout(() => { s.style.opacity = '1'; scrollPos = container.scrollTop; requestAnimationFrame(scrollStep); }, 100);
+
+            setTimeout(() => {
+                s.style.opacity = '1';
+                scrollPos = container.scrollTop;
+                requestAnimationFrame(scrollStep);
+            }, 100);
         }
 
         function scrollStep() {
             if(!autoScrollActive || activePageIndex !== 4) return;
             const container = document.getElementById('wishes-scroller-container');
-            if(!container) return;
-            if(!isUserScrolling) { scrollPos += 0.5; container.scrollTop = scrollPos; if(container.scrollTop >= container.scrollHeight - container.clientHeight) { scrollPos = 0; } }
-            else { scrollPos = container.scrollTop; }
+            if(!isUserScrolling) {
+                scrollPos += 0.5;
+                container.scrollTop = scrollPos;
+                if(container.scrollTop >= container.scrollHeight - container.clientHeight) {
+                    scrollPos = 0;
+                }
+            } else {
+                scrollPos = container.scrollTop;
+            }
             requestAnimationFrame(scrollStep);
         }
 
         function startAriesJourney() {
             autoScrollActive = false;
-            const scene = document.getElementById('friends-wishes-scene'); if (scene) scene.style.opacity = '0';
+            const scene = document.getElementById('friends-wishes-scene');
+            scene.style.opacity = '0';
             const stars = document.getElementById('stars-night'), ariesCanvas = document.getElementById('aries-const-canvas'), moon = document.getElementById('moon-element'), ariesBg = document.getElementById('aries-bg-img');
-            if (stars) stars.style.transform = 'scale(1.8) translate(-10%, -10%)'; 
-            if (ariesCanvas) ariesCanvas.style.transform = 'scale(1.8) translate(-10%, -10%)'; 
-            if (ariesBg) ariesBg.style.transform = 'scale(1.8) translate(-10%, -10%)'; 
-            if (moon) moon.style.transform = 'translate(150%, -150%) scale(0.2)';
-            setTimeout(() => { 
-                if (scene) scene.style.display = 'none'; 
-                document.getElementById('final-aries-overlay').style.display = 'flex'; 
-                if (ariesBg) ariesBg.style.opacity = '0.35'; 
-                drawAriesLines(); 
-            }, 2000);
+            stars.style.transform = 'scale(1.8) translate(-10%, -10%)'; ariesCanvas.style.transform = 'scale(1.8) translate(-10%, -10%)'; ariesBg.style.transform = 'scale(1.8) translate(-10%, -10%)'; moon.style.transform = 'translate(150%, -150%) scale(0.2)';
+            setTimeout(() => { scene.style.display = 'none'; document.getElementById('final-aries-overlay').style.display = 'flex'; ariesBg.style.opacity = '0.35'; drawAriesLines(); const backBtn = document.getElementById('back-to-wishes'); backBtn.style.display = 'block'; setTimeout(() => backBtn.style.opacity = '1', 500); }, 2000);
         }
 
         function drawAriesLines() {
-            const c = document.getElementById('aries-const-canvas'); if(!c) return; const ctx = c.getContext('2d');
+            const c = document.getElementById('aries-const-canvas'); const ctx = c.getContext('2d');
             c.width = window.innerWidth; c.height = window.innerHeight;
             let progress = 0;
             function animate() {
                 if (activePageIndex !== 4) return;
-                ctx.clearRect(0,0,c.width, c.height); ctx.strokeStyle = 'rgba(255, 240, 200, 0.85)'; ctx.lineWidth = 1.5; ctx.shadowBlur = 15; ctx.shadowColor = 'rgba(255, 240, 200, 1)'; ctx.beginPath(); ctx.moveTo(ariesStars[0].x * c.width, ariesStars[0].y * c.height);
+                ctx.clearRect(0,0,c.width, c.height); ctx.strokeStyle = 'rgba(197, 160, 89, 0.9)'; ctx.lineWidth = 1; ctx.shadowBlur = 10; ctx.shadowColor = 'var(--gold)'; ctx.beginPath(); ctx.moveTo(ariesStars[0].x * c.width, ariesStars[0].y * c.height);
                 for(let i=1; i < ariesStars.length; i++) {
-                    const pStart = ariesStars[i-1], pEnd = ariesStars[i], segmentProgress = Math.min(1, Math.max(0, progress - (i-1)));
-                    const currX = (pStart.x + (pEnd.x - pStart.x) * segmentProgress) * c.width, currY = (pStart.y + (pEnd.y - pStart.y) * segmentProgress) * c.height;
+                    const pStart = ariesStars[i-1], pEnd = ariesStars[i]; const segmentProgress = Math.min(1, Math.max(0, progress - (i-1)));
+                    const currX = (pStart.x + (pEnd.x - pStart.x) * segmentProgress) * c.width; const currY = (pStart.y + (pEnd.y - pStart.y) * segmentProgress) * c.height;
                     ctx.lineTo(currX, currY); if (segmentProgress < 1) break;
                 }
-                ctx.stroke(); progress += 0.02; ariesHighlight = Math.min(1, progress / 1.5); 
-                if(progress < ariesStars.length) { requestAnimationFrame(animate); } 
-                else { 
-                    const q = document.getElementById('final-quote'); if(q) q.style.opacity = '1'; 
-                    setTimeout(() => { const backBtn = document.getElementById('back-to-wishes'); if(backBtn) { backBtn.style.display = 'block'; setTimeout(() => backBtn.style.opacity = '1', 50); } }, 2000);
-                }
+                ctx.stroke(); progress += 0.02; if(progress < ariesStars.length) requestAnimationFrame(animate); else { document.getElementById('final-quote').style.opacity = '1'; }
             }
             animate();
         }
 
+        function movePage(step) {
+            if (step === 1 && currentPassword !== "admin123") return;
+            let nextIndex = activePageIndex + step;
+            if (nextIndex >= 0 && nextIndex < pageFlow.length) {
+                activePageIndex = nextIndex;
+                const targetId = pageFlow[activePageIndex];
+                clearAllIntervals();
+                gameActive = false; 
+                const bc = document.getElementById('balloon-container');
+                if (bc) bc.innerHTML = '';
+                const cLink = document.getElementById('my-console-link');
+                if (cLink) {
+                    if (nextIndex < 2) { cLink.style.display = 'flex'; setTimeout(() => cLink.style.opacity = '1', 50); } 
+                    else { cLink.style.opacity = '0'; setTimeout(() => cLink.style.display = 'none', 300); }
+                }
+                pageFlow.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) { el.style.transition = 'none'; el.style.opacity = '0'; el.style.display = 'none'; setTimeout(() => { el.style.transition = ''; }, 50); }
+                });
+                const targetEl = document.getElementById(targetId);
+                if (targetEl) {
+                    targetEl.style.display = (targetId === 'page-celebration' || targetId === 'page-surprise') ? 'block' : 'flex';
+                    setTimeout(() => targetEl.style.opacity = '1', 50);
+                }
+                if (targetId === 'page-landing' || targetId === 'login-overlay') { 
+                    document.body.classList.remove('allow-scroll'); window.scrollTo(0, 0); 
+                    if (targetId === 'page-landing') { initLandingParticles(); animateLandingParticles(); }
+                } 
+                else if (targetId === 'game-session') { gameActive = true; popped = 0; document.getElementById('pop-count').innerText = 0; initGameBokeh(); spawnLoop(); } 
+                else if (targetId === 'page-celebration') { document.body.classList.add('allow-scroll'); initHeart(); startObservers(); } 
+                else if (targetId === 'page-surprise') { document.body.classList.remove('allow-scroll'); goToNightScene(); }
+            }
+        }
+
         function handleMoonClick() {
-            const moon = document.getElementById('moon-element');
-            if (moon && moon.classList.contains('glow-active')) {
+            const bgMusic = document.getElementById('bg-music');
+            if (bgMusic) {
+                let vol = bgMusic.volume;
+                const fadeOutInt = setInterval(() => {
+                    if (vol > 0.02) {
+                        vol -= 0.01;
+                        bgMusic.volume = Math.max(vol, 0); 
+                    } else {
+                        clearInterval(fadeOutInt); 
+                        bgMusic.pause();
+                        window.location.href = 'https://christianeff13.github.io/PixelKey/';
+                    }
+                }, 50); 
+            } else {
                 window.location.href = 'https://christianeff13.github.io/PixelKey/';
             }
         }
 
         function resetFromStars() {
             const overlay = document.getElementById('final-aries-overlay'), quote = document.getElementById('final-quote'), backBtn = document.getElementById('back-to-wishes'), stars = document.getElementById('stars-night'), ariesCanvas = document.getElementById('aries-const-canvas'), moon = document.getElementById('moon-element'), ariesBg = document.getElementById('aries-bg-img');
-            if(quote) quote.style.opacity = '0'; if(backBtn) backBtn.style.opacity = '0'; 
-            if(ariesBg) ariesBg.style.opacity = '0'; 
-            if(ariesCanvas) ariesCanvas.getContext('2d').clearRect(0,0,ariesCanvas.width, ariesCanvas.height);
-            if(stars) stars.style.transform = 'scale(1) translate(0, 0)'; 
-            if(ariesCanvas) ariesCanvas.style.transform = 'scale(1) translate(0, 0)'; 
-            if(ariesBg) ariesBg.style.transform = 'scale(1) translate(0, 0)'; 
-            if(moon) { moon.style.transform = 'translate(0, 0) scale(1)'; }
-            ariesHighlight = 0; 
+            quote.style.opacity = '0'; backBtn.style.opacity = '0'; ariesBg.style.opacity = '0';
+            const ctx = ariesCanvas.getContext('2d'); ctx.clearRect(0,0,ariesCanvas.width, ariesCanvas.height);
+            stars.style.transform = 'scale(1) translate(0, 0)'; ariesCanvas.style.transform = 'scale(1) translate(0, 0)'; ariesBg.style.transform = 'scale(1) translate(0, 0)'; moon.style.transform = 'translate(0, 0) scale(1)';
             
             setTimeout(() => { 
-                if(overlay) overlay.style.display = 'none'; 
-                if(backBtn) backBtn.style.display = 'none'; 
-                startScroller(); 
+                overlay.style.display = 'none'; 
+                backBtn.style.display = 'none'; 
+                if (moon) moon.classList.add('glow-active'); 
                 
-                setTimeout(() => { 
-                    if (moon) moon.classList.add('glow-active');
-                }, 1000);
-            }, 2000);
-        }
+                const moonHitbox = document.getElementById('moon-hitbox');
+                if (moonHitbox) moonHitbox.style.display = 'block';
 
-        function finishCountdown() {
-            if(countdownInterval) clearInterval(countdownInterval);
-            const container = document.getElementById("countdown-container");
-            if(container) { container.innerHTML = `<div style="font-family: 'Dancing Script', cursive; font-size: clamp(3rem, 8vw, 6rem); color: var(--gold); text-shadow: 0 0 20px rgba(197,160,89,0.5);">It's Your Day!</div>`; }
+                startScroller(); 
+            }, 2000);
         }
 
         countdownInterval = setInterval(() => {
             const diff = new Date("April 13, 2026 00:00:00") - Date.now();
             if(diff > 0 && !adminBypassCountdown) {
-                const ds = document.getElementById("days"), hs = document.getElementById("hours"), ms = document.getElementById("mins"), ss = document.getElementById("secs");
-                if(ds) ds.innerText = Math.floor(diff/86400000).toString().padStart(2,'0');
-                if(hs) hs.innerText = Math.floor((diff%86400000)/3600000).toString().padStart(2,'0');
-                if(ms) ms.innerText = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
-                if(ss) ss.innerText = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
-            } else if (!adminBypassCountdown) { finishCountdown(); }
+                let ds = document.getElementById("days");
+                if (ds) ds.innerText = Math.floor(diff/86400000).toString().padStart(2,'0');
+                
+                let hs = document.getElementById("hours");
+                if (hs) hs.innerText = Math.floor((diff%86400000)/3600000).toString().padStart(2,'0');
+                
+                let ms = document.getElementById("mins");
+                if (ms) ms.innerText = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
+                
+                let ss = document.getElementById("secs");
+                if (ss) ss.innerText = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
+            } else if (diff <= 0 && !adminBypassCountdown) {
+                finishCountdown();
+            }
         }, 1000);
     </script>
 </body>
