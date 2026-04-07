@@ -161,6 +161,9 @@
         #firework-text-canvas { position: absolute; inset: 0; z-index: 21000; pointer-events: none; }
         #stars-night { position: absolute; inset: 0; z-index: 2; transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; pointer-events: none; }
 
+        #aries-bg-img { position: absolute; inset: 0; z-index: 1; pointer-events: none; transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1), opacity 2s ease; transform-origin: center center; opacity: 0; width: 100%; height: 100%; object-fit: contain; mix-blend-mode: screen; }
+        #aries-const-canvas { position: absolute; inset: 0; z-index: 2; pointer-events: none; transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
+
         #friends-wishes-scene { display: none; position: absolute; inset: 0; z-index: 25000; flex-direction: column; align-items: center; color: #fff; opacity: 0; transition: opacity 2s ease; padding-top: 10vh; pointer-events: none; }
         #wishes-scroller-container { width: 100%; height: 80vh; overflow-y: scroll; scrollbar-width: none; -ms-overflow-style: none; padding-top: 50vh; padding-bottom: 50vh; scroll-behavior: auto; pointer-events: auto; }
         #wishes-scroller-container::-webkit-scrollbar { display: none; }
@@ -170,7 +173,6 @@
         
         #final-aries-overlay { position: fixed; inset: 0; z-index: 15000; display: none; flex-direction: column; justify-content: center; align-items: center; background: transparent; text-align: center; padding: 40px; pointer-events: none; width: 100%; height: 100%; }
         .aries-quote { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.2rem, 5vw, 2.5rem); font-style: italic; color: var(--white); opacity: 0; transition: opacity 3s ease; line-height: 1.6; width: 90%; max-width: 900px; text-shadow: 0 0 20px rgba(197, 160, 89, 0.5); margin-top: 50px; padding: 0 20px; text-align: center; }
-        #aries-const-canvas { position: absolute; inset: 0; z-index: 1; pointer-events: none; transition: transform 4s cubic-bezier(0.4, 0, 0.2, 1); transform-origin: center center; }
 
         #back-to-wishes { position: fixed; bottom: 10vh; left: 50%; transform: translateX(-50%); z-index: 26000; display: none; opacity: 0; transition: 1s; pointer-events: auto; padding: 15px 35px; font-size: 1rem; border-radius: 50px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); width: max-content; background: rgba(3, 8, 10, 0.8); color: var(--gold); border: 1px solid var(--gold); }
         #back-to-wishes:hover { background: var(--gold); color: white; }
@@ -282,6 +284,7 @@
     <div id="page-surprise">
         <div class="night-sky">
             <canvas id="stars-night"></canvas>
+            <img id="aries-bg-img" src="https://i.postimg.cc/kg8hhn2L/6d378ccc-3454-4afc-a8d2-980f1c0445ae.png" alt="Aries Background">
             <canvas id="aries-const-canvas"></canvas>
         </div>
         <img class="moon" id="moon-element" src="https://i.postimg.cc/qBWTkxXD/moon-png-no-background-15.png" alt="Moon" onerror="this.src='https://i.postimg.cc/mD8pTzY2/moon-placeholder.png'" onclick="handleMoonClick()">
@@ -294,10 +297,9 @@
         <div id="friends-wishes-scene">
             <h1 style="position: absolute; top: 4%; left: 50%; transform: translateX(-50%); width: 100%; text-align: center; font-family: 'Cormorant Garamond'; font-size: clamp(2.5rem, 7vw, 4rem); color: var(--gold); margin: 0; font-style: italic; text-shadow: 0 0 20px rgba(197, 160, 89, 0.5);">Happy Birthday Leonita!</h1>
             <div id="wishes-scroller-container">
-                <div class="wish-item" style="margin-top: 100px;"><h3>Teman 1</h3><p>HBD Leyonn! Semoga makin cantik, sukses kuliahnya, dan langgeng terus yaa sama pacarnya. Wish you all the best!</p></div>
-                <div class="wish-item"><h3>Teman 2</h3><p>Selamat umur 20! Selamat datang di kepala dua, semoga semua mimpinya tercapai satu per satu!</p></div>
-                <div class="wish-item"><h3>Teman 3</h3><p>Happy birthday! Bahagia selalu ya Leonita, tetap jadi orang baik dan ceria terus!</p></div>
-                <div class="wish-item"><h3>Teman 4</h3><p>HBD! Makan-makan ya ditunggu, sehat selalu dan sukses karirnya nanti!</p></div>
+                <div class="wish-item" style="margin-top: 100px;"><h3>Alexa</h3><p>HAAPPY BIRTHDAYYYY to our leyonzzz ❤️ wishing you all the best! semoga di tahun ini dan berikut"nya kamu bahagia terus entah dari aspek family, temen, pasangan, keuangan, kuliah, dan semua"nyaa. gila dah mau 10 taun ni kita tmeenan, and i hope bisa terus sampe 100 tahun lamanya anjayy 😎 kalau ada apa apa im here to help you and be on your side always (tp kalo kamu salah aku marahin ttp ye 🤓) langgeng ya sama tiann, aku mau ngasih tau sesuatu tp nnti ah kalo udah pulang ya hehehe biar suprise. gass kita kerja keras supaya bisa keliling dunia bareng cuyy + rumah tetanggaan di BSD atoga GS aja ya soalnya karawang burik gaada apa apa nanti. Enjoy your day and year!! Buddha Bless you 💕</p></div>
+                <div class="wish-item"><h3>Amoy</h3><p>haloo lion 🦁 Happy birthdayy yaa moicai anciangg, semoga di umur yang baru semakin sukses,priti,baik terus ke semua orang supel, friendlyyy, smoga lingkungan skitar km isinya org baik baikk semuaa sama kamuu, semoga juga ttp jadi kebanggan keluargaa dan jd manfaat buat banyak orang, jangan banyak overthinking dan merasa tidak enak sm org yang nyebelin sm kmu yon...smoga rajin terus bekerja supaya bisa liburan bersama, ayo kt main lagi, once again happy birthdayyy lionn💛💛💛</p></div>
+                <div class="wish-item"><h3>Syisyi</h3><p>Happy Birthday, Leon🤍 Thank you for always being there for Syisyi. You know how much Syisyi loves u, always and endlessly ♡  I hope ur days are filled with happiness, your heart always feels light, and every dream you carry slowly finds its way to you. May everything you wish for come true, and everything you need always be within reach. i love UUUU leooNnN</p></div>
                 <div style="text-align: center; padding-bottom: 200px;">
                     <button class="next-btn" onclick="startAriesJourney()" style="pointer-events: auto;">See The Stars</button>
                 </div>
@@ -905,7 +907,7 @@
                     f.ry -= 15; 
                     if(f.ry <= f.targetY) { 
                         f.exploded = true; f.startTime = now; 
-                        playFireworkSound();
+                        playFireworkSound(); 
                         for(let i=0; i<40; i++) {
                             const angle = Math.random() * Math.PI * 2, speed = Math.random() * 6 + 2;
                             f.particles.push({ x: f.x + f.fontSize/3, y: f.targetY, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, life: 1.0, decay: Math.random()*0.015 + 0.01, color: Math.random() > 0.5 ? f.color : '#ffffff' });
@@ -971,10 +973,17 @@
         function startAriesJourney() {
             autoScrollActive = false;
             const scene = document.getElementById('friends-wishes-scene'); if (scene) scene.style.opacity = '0';
-            const stars = document.getElementById('stars-night'), ariesCanvas = document.getElementById('aries-const-canvas'), moon = document.getElementById('moon-element');
-            if (stars) stars.style.transform = 'scale(1.8) translate(-10%, -10%)'; if (ariesCanvas) ariesCanvas.style.transform = 'scale(1.8) translate(-10%, -10%)'; 
+            const stars = document.getElementById('stars-night'), ariesCanvas = document.getElementById('aries-const-canvas'), moon = document.getElementById('moon-element'), ariesBg = document.getElementById('aries-bg-img');
+            if (stars) stars.style.transform = 'scale(1.8) translate(-10%, -10%)'; 
+            if (ariesCanvas) ariesCanvas.style.transform = 'scale(1.8) translate(-10%, -10%)'; 
+            if (ariesBg) ariesBg.style.transform = 'scale(1.8) translate(-10%, -10%)'; 
             if (moon) moon.style.transform = 'translate(150%, -150%) scale(0.2)';
-            setTimeout(() => { if (scene) scene.style.display = 'none'; document.getElementById('final-aries-overlay').style.display = 'flex'; drawAriesLines(); }, 2000);
+            setTimeout(() => { 
+                if (scene) scene.style.display = 'none'; 
+                document.getElementById('final-aries-overlay').style.display = 'flex'; 
+                if (ariesBg) ariesBg.style.opacity = '0.35'; 
+                drawAriesLines(); 
+            }, 2000);
         }
 
         function drawAriesLines() {
@@ -1007,10 +1016,13 @@
         }
 
         function resetFromStars() {
-            const overlay = document.getElementById('final-aries-overlay'), quote = document.getElementById('final-quote'), backBtn = document.getElementById('back-to-wishes'), stars = document.getElementById('stars-night'), ariesCanvas = document.getElementById('aries-const-canvas'), moon = document.getElementById('moon-element');
+            const overlay = document.getElementById('final-aries-overlay'), quote = document.getElementById('final-quote'), backBtn = document.getElementById('back-to-wishes'), stars = document.getElementById('stars-night'), ariesCanvas = document.getElementById('aries-const-canvas'), moon = document.getElementById('moon-element'), ariesBg = document.getElementById('aries-bg-img');
             if(quote) quote.style.opacity = '0'; if(backBtn) backBtn.style.opacity = '0'; 
+            if(ariesBg) ariesBg.style.opacity = '0'; 
             if(ariesCanvas) ariesCanvas.getContext('2d').clearRect(0,0,ariesCanvas.width, ariesCanvas.height);
-            if(stars) stars.style.transform = 'scale(1) translate(0, 0)'; if(ariesCanvas) ariesCanvas.style.transform = 'scale(1) translate(0, 0)'; 
+            if(stars) stars.style.transform = 'scale(1) translate(0, 0)'; 
+            if(ariesCanvas) ariesCanvas.style.transform = 'scale(1) translate(0, 0)'; 
+            if(ariesBg) ariesBg.style.transform = 'scale(1) translate(0, 0)'; 
             if(moon) { moon.style.transform = 'translate(0, 0) scale(1)'; }
             ariesHighlight = 0; 
             
