@@ -748,17 +748,15 @@
             const c = document.getElementById('shooting-star-canvas'); const ctx = c.getContext('2d');
             c.width = window.innerWidth; c.height = window.innerHeight;
             
-            const startX = c.width + 50;
-            const startY = -50;
-            
-            // Target ke arah kiri bawah layar
-            const targetX = c.width * 0.1;
-            const targetY = c.height;
+            const targetX = c.width / 2;
+            const targetY = c.height / 2;
+            const startX = c.width + 100;
+            const startY = -100;
             
             const dx = targetX - startX;
             const dy = targetY - startY;
             const dist = Math.sqrt(dx*dx + dy*dy);
-            const speed = 15; // Lebih smooth dan proporsional
+            const speed = 15; 
             const vx = (dx / dist) * speed;
             const vy = (dy / dist) * speed;
 
@@ -835,7 +833,7 @@
                     ctx.beginPath(); ctx.arc(ssX, ssY, 6, 0, Math.PI * 2); ctx.fillStyle = `rgba(255, 255, 255, ${starOpacity})`; ctx.shadowBlur = 30 * starOpacity; ctx.shadowColor = 'white'; ctx.fill(); ctx.shadowBlur = 0; 
                     
                     // Menghilang ketika hampir sampai bawah layar
-                    if(ssY >= c.height * 0.85) { 
+                    if(ssY >= c.height * 0.95) { 
                         fadeOutStar = true;
                     }
                 }
@@ -892,25 +890,43 @@
                     const charParticles = [];
                     if (safeW > 0 && safeH > 0) {
                         const imgData = offCtx.getImageData(startX, startY, safeW, safeH).data;
-                        for(let y = 0; y < safeH; y += 2.5) { 
-                            for(let x = 0; x < safeW; x += 2.5) {
+                        for(let y = 0; y < safeH; y += 3) { 
+                            for(let x = 0; x < safeW; x += 3) {
                                 const idx = (Math.floor(y) * safeW + Math.floor(x)) * 4;
                                 const alpha = imgData[idx + 3];
                                 if (alpha > 128) {
+                                    const spreadAngle = Math.random() * Math.PI * 2;
+                                    const spreadSpeed = Math.random() * 2 + 0.5;
                                     charParticles.push({
-                                        x: startX + x, y: startY + y, vx: 0, vy: 0, life: 1.0,
-                                        delay: Math.random() * 1000 + 1000, decay: Math.random() * 0.08 + 0.04,
+                                        x: startX + x, y: startY + y, 
+                                        vx: Math.cos(spreadAngle) * spreadSpeed, 
+                                        vy: Math.sin(spreadAngle) * spreadSpeed, 
+                                        life: 1.0,
+                                        delay: Math.random() * 800 + 1000, // Waktu bertahan sebelum menyebar
+                                        decay: Math.random() * 0.015 + 0.008, // Kecepatan memudar
                                         sparkAngle: Math.random() * Math.PI * 2,
-                                        sparkLen: Math.random() * 1.8 + 1.2
+                                        sparkLen: Math.random() * 1.5 + 1
                                     });
                                 }
                             }
                         }
                     }
 
+                    // Ledakan kecil di tengah teks
+                    const burstParticles = [];
+                    for(let i=0; i<25; i++) {
+                        const angle = Math.random() * Math.PI * 2, speed = Math.random() * 5 + 2;
+                        burstParticles.push({ 
+                            x: currentX + w/2, y: centerY - fontSize/3, 
+                            vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, 
+                            life: 1.0, decay: Math.random()*0.03 + 0.015, 
+                            color: Math.random() > 0.5 ? colors[Math.floor(Math.random()*colors.length)] : '#ffffff' 
+                        });
+                    }
+
                     textFireworks.push({ 
                         char, x: currentX, targetY: centerY, ry: fwCanvas.height + 50, color: colors[Math.floor(Math.random()*colors.length)], exploded: false, 
-                        particles: [], textParticles: charParticles, fontSize: fontSize, startTime: 0, trail: [] 
+                        burstParticles: burstParticles, textParticles: charParticles, fontSize: fontSize, startTime: 0, trail: [] 
                     }); 
                 }
                 currentX += w;
@@ -941,36 +957,55 @@
                             ca.play().catch(e => console.log("Audio diblokir:", e));
                             window.hasPlayedCluster = true; 
                         }
-
-                        for(let i=0; i<40; i++) {
-                            const angle = Math.random() * Math.PI * 2, speed = Math.random() * 6 + 2;
-                            f.particles.push({ x: f.x + f.fontSize/3, y: f.targetY, vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed, life: 1.0, decay: Math.random()*0.015 + 0.01, color: Math.random() > 0.5 ? f.color : '#ffffff' });
-                        }
                     }
                 } else {
                     const elapsed = now - f.startTime;
-                    f.particles.forEach(p => {
-                        if (p.life > 0) {
-                            anyActive = true; p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.vx *= 0.98; p.vx *= 0.98; p.life -= p.decay;
-                            fwCtx.beginPath(); fwCtx.moveTo(p.x, p.y); fwCtx.lineTo(p.x - p.vx * 2.5, p.y - p.vy * 2.5);
-                            fwCtx.strokeStyle = p.color; fwCtx.lineWidth = 1.2; fwCtx.lineCap = 'round'; fwCtx.globalAlpha = Math.max(0, p.life); fwCtx.stroke();
-                        }
-                    });
+                    
+                    if (f.burstParticles && f.burstParticles.length > 0) {
+                        anyActive = true;
+                        let bCount = 0;
+                        f.burstParticles.forEach(p => {
+                            if (p.life > 0) {
+                                bCount++;
+                                p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.vx *= 0.95; p.vy *= 0.95; p.life -= p.decay;
+                                fwCtx.beginPath(); fwCtx.moveTo(p.x, p.y); fwCtx.lineTo(p.x - p.vx * 2.5, p.y - p.vy * 2.5);
+                                fwCtx.strokeStyle = p.color; fwCtx.lineWidth = 1.5; fwCtx.lineCap = 'round'; fwCtx.globalAlpha = Math.max(0, p.life); fwCtx.stroke();
+                            }
+                        });
+                        if (bCount === 0) f.burstParticles = [];
+                    }
 
                     if (f.textParticles && f.textParticles.length > 0) {
                         anyActive = true; let activeCount = 0;
                         f.textParticles.forEach(tp => {
                             if (tp.life > 0) {
                                 activeCount++;
-                                if (elapsed > tp.delay) tp.life -= tp.decay;
-                                let alpha = Math.max(0, tp.life);
-                                if (elapsed < 300) alpha = (elapsed / 300) * tp.life;
-
+                                let alpha = 1;
+                                
                                 fwCtx.beginPath();
-                                fwCtx.moveTo(tp.x, tp.y);
-                                fwCtx.lineTo(tp.x + Math.cos(tp.sparkAngle) * tp.sparkLen, tp.y + Math.sin(tp.sparkAngle) * tp.sparkLen);
+                                if (elapsed > tp.delay) {
+                                    // Partikel mulai menyebar dan memudar
+                                    tp.x += tp.vx; 
+                                    tp.y += tp.vy; 
+                                    tp.vy += 0.015; // Sedikit gravitasi
+                                    tp.vx *= 0.98; // Gesekan udara
+                                    tp.vy *= 0.98; 
+                                    tp.life -= tp.decay;
+                                    alpha = Math.max(0, tp.life);
+                                    
+                                    fwCtx.moveTo(tp.x, tp.y);
+                                    fwCtx.lineTo(tp.x - tp.vx * 1.5, tp.y - tp.vy * 1.5);
+                                } else {
+                                    // Menahan bentuk tulisan di awal
+                                    alpha = Math.random() * 0.4 + 0.6;
+                                    if (elapsed < 500) alpha *= (elapsed / 500);
+
+                                    fwCtx.moveTo(tp.x, tp.y);
+                                    fwCtx.lineTo(tp.x + Math.cos(tp.sparkAngle) * tp.sparkLen, tp.y + Math.sin(tp.sparkAngle) * tp.sparkLen);
+                                }
+                                
                                 fwCtx.strokeStyle = f.color;
-                                fwCtx.lineWidth = 1.3;
+                                fwCtx.lineWidth = 1.5;
                                 fwCtx.lineCap = 'round';
                                 fwCtx.globalAlpha = alpha;
                                 fwCtx.stroke();
@@ -1040,7 +1075,7 @@
             scene.style.opacity = '0';
             const stars = document.getElementById('stars-night'), ariesCanvas = document.getElementById('aries-const-canvas'), moon = document.getElementById('moon-element'), ariesBg = document.getElementById('aries-bg-img');
             stars.style.transform = 'scale(1.8) translate(-10%, -10%)'; ariesCanvas.style.transform = 'scale(1.8) translate(-10%, -10%)'; ariesBg.style.transform = 'scale(1.8) translate(-10%, -10%)'; moon.style.transform = 'translate(150%, -150%) scale(0.2)';
-            setTimeout(() => { scene.style.display = 'none'; document.getElementById('final-aries-overlay').style.display = 'flex'; ariesBg.style.opacity = '0.35'; drawAriesLines(); const backBtn = document.getElementById('back-to-wishes'); backBtn.style.display = 'block'; setTimeout(() => backBtn.style.opacity = '1', 500); }, 2000);
+            setTimeout(() => { scene.style.display = 'none'; document.getElementById('final-aries-overlay').style.display = 'flex'; ariesBg.style.opacity = '0.35'; drawAriesLines(); }, 2000);
         }
 
         function drawAriesLines() {
@@ -1055,7 +1090,18 @@
                     const currX = (pStart.x + (pEnd.x - pStart.x) * segmentProgress) * c.width; const currY = (pStart.y + (pEnd.y - pStart.y) * segmentProgress) * c.height;
                     ctx.lineTo(currX, currY); if (segmentProgress < 1) break;
                 }
-                ctx.stroke(); progress += 0.02; if(progress < ariesStars.length) requestAnimationFrame(animate); else { document.getElementById('final-quote').style.opacity = '1'; }
+                ctx.stroke(); progress += 0.02; 
+                if(progress < ariesStars.length) {
+                    requestAnimationFrame(animate); 
+                } else { 
+                    document.getElementById('final-quote').style.opacity = '1'; 
+                    // Menunggu 3 detik sampai quote muncul sempurna, baru tampilkan tombol
+                    setTimeout(() => {
+                        const backBtn = document.getElementById('back-to-wishes'); 
+                        backBtn.style.display = 'block'; 
+                        setTimeout(() => backBtn.style.opacity = '1', 50);
+                    }, 3000); 
+                }
             }
             animate();
         }
