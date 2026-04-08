@@ -320,7 +320,7 @@
                 <div class="wish-item" style="margin-top: 100px;"><h3>Alexa</h3><p>HAAPPY BIRTHDAYYYY to our leyonzzz ❤️ wishing you all the best! semoga di tahun ini dan berikut"nya kamu bahagia terus entah dari aspek family, temen, pasangan, keuangan, kuliah, dan semua"nyaa. gila dah mau 10 taun ni kita tmeenan, and i hope bisa terus sampe 100 tahun lamanya anjayy 😎 kalau ada apa apa im here to help you and be on your side always (tp kalo kamu salah aku marahin ttp ye 🤓) langgeng ya sama tiann, aku mau ngasih tau sesuatu tp nnti ah kalo udah pulang ya hehehe biar suprise. gass kita kerja keras supaya bisa keliling dunia bareng cuyy + rumah tetanggaan di BSD atoga GS aja ya soalnya karawang burik gaada apa apa nanti. Enjoy your day and year!! Buddha Bless you 💕</p></div>
                 <div class="wish-item"><h3>Amoy</h3><p>haloo lion 🦁 Happy birthdayy yaa moicai anciangg, semoga di umur yang baru semakin sukses,priti,baik terus ke semua orang supel, friendlyyy, smoga lingkungan skitar km isinya org baik baikk semuaa sama kamuu, semoga juga ttp jadi kebanggan keluargaa dan jd manfaat buat banyak orang, jangan banyak overthinking dan merasa tidak enak sm org yang nyebelin sm kmu yon...smoga rajin terus bekerja supaya bisa liburan bersama, ayo kt main lagi, once again happy birthdayyy lionn💛💛💛</p></div>
                 <div class="wish-item"><h3>Syisyi</h3><p>Happy Birthday, Leon🤍 Thank you for always being there for Syisyi. You know how much Syisyi loves u, always and endlessly ♡  I hope ur days are filled with happiness, your heart always feels light, and every dream you carry slowly finds its way to you. May everything you wish for come true, and everything you need always be within reach. i love UUUU leooNnN</p></div>
-                <div class="wish-item"><h3>Jesi</h3><p>happy birthday leon, semoga panjang umur sehat selalu, langgeng yaaaa le, makin++++, sukses terus kuliahnyaa, gbuu 🥳🥳🥳 g</p></div>
+                <div class="wish-item"><h3>Jesi</h3><p> happy birthday leon, semoga panjang umur sehat selalu, langgeng yaaaa le, makin++++, sukses terus kuliahnyaa, gbuu 🥳🥳🥳</p></div>               
                 <div style="text-align: center; padding-bottom: 200px;">
                     <button class="next-btn" onclick="startAriesJourney()">See The Stars</button>
                 </div>
@@ -748,79 +748,99 @@
             const c = document.getElementById('shooting-star-canvas'); const ctx = c.getContext('2d');
             c.width = window.innerWidth; c.height = window.innerHeight;
             
-            const targetX = c.width / 2;
-            const targetY = c.height / 2;
-            const startX = c.width + 100;
-            const startY = -100;
+            const startX = c.width + 50;
+            const startY = -50;
             
-            let ssX = startX;
-            let ssY = startY;
+            // Target ke arah kiri bawah layar
+            const targetX = c.width * 0.1;
+            const targetY = c.height;
             
-            const dx = targetX - ssX;
-            const dy = targetY - ssY;
+            const dx = targetX - startX;
+            const dy = targetY - startY;
             const dist = Math.sqrt(dx*dx + dy*dy);
-            const speed = 12; 
+            const speed = 15; // Lebih smooth dan proporsional
             const vx = (dx / dist) * speed;
             const vy = (dy / dist) * speed;
 
+            let ssX = startX;
+            let ssY = startY;
+
             let ssActive = true, starPath = [];
+            
             let clingState = 0; 
             let clingAlpha = 0;
+            let triggerX = c.width - 30; // Muncul di awal kemunculan layar
+            let fadeOutStar = false; // Untuk menghilang dengan halus
+            let starOpacity = 1;
             
             function animate() { 
                 if(!ssActive || activePageIndex !== 4) return; 
                 ctx.clearRect(0, 0, c.width, c.height); 
                 
-                ssX += vx; ssY += vy; 
-                
-                starPath.push({x: ssX, y: ssY}); 
-                if(starPath.length > 25) starPath.shift();
+                if (!fadeOutStar) {
+                    ssX += vx; ssY += vy; 
+                    starPath.push({x: ssX, y: ssY}); 
+                    if(starPath.length > 30) starPath.shift(); // Ekor lebih panjang dan halus
+                } else {
+                    // Efek menghilang smooth
+                    starOpacity -= 0.05;
+                    starPath.shift();
+                    if (starOpacity <= 0 || starPath.length <= 1) {
+                        ssActive = false;
+                        showWishUI();
+                        return;
+                    }
+                }
                 
                 if(starPath.length > 1) {
                     ctx.beginPath(); ctx.moveTo(starPath[starPath.length-1].x, starPath[starPath.length-1].y);
                     for(let i = starPath.length - 2; i >= 0; i--) { ctx.lineTo(starPath[i].x, starPath[i].y); }
-                    const g = ctx.createLinearGradient(ssX, ssY, starPath[0].x, starPath[0].y);
-                    g.addColorStop(0, 'white'); g.addColorStop(0.3, 'rgba(255, 230, 150, 0.6)'); g.addColorStop(1, 'transparent'); 
+                    const g = ctx.createLinearGradient(starPath[starPath.length-1].x, starPath[starPath.length-1].y, starPath[0].x, starPath[0].y);
+                    g.addColorStop(0, `rgba(255, 255, 255, ${starOpacity})`); 
+                    g.addColorStop(0.3, `rgba(255, 230, 150, ${starOpacity * 0.7})`); 
+                    g.addColorStop(1, 'rgba(255, 255, 255, 0)'); 
                     ctx.strokeStyle = g; ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.stroke(); 
                 }
 
-                if (ssX <= targetX && clingState === 0) { 
-                    clingState = 1; 
-                }
+                if (!fadeOutStar) {
+                    if (ssX <= triggerX && clingState === 0) { 
+                        clingState = 1; 
+                    }
 
-                if (clingState === 1) {
-                    clingAlpha += 0.05;
-                    if (clingAlpha >= 1) { clingAlpha = 1; clingState = 2; }
-                } else if (clingState === 2) {
-                    clingAlpha -= 0.02;
-                    if (clingAlpha <= 0) { clingAlpha = 0; clingState = 3; }
-                }
+                    if (clingState === 1) {
+                        clingAlpha += 0.05;
+                        if (clingAlpha >= 1) { clingAlpha = 1; clingState = 2; }
+                    } else if (clingState === 2) {
+                        clingAlpha -= 0.015;
+                        if (clingAlpha <= 0) { clingAlpha = 0; clingState = 3; } // Hanya 1 kali
+                    }
 
-                if (clingAlpha > 0) {
-                    const shineLen = 150 * clingAlpha; 
-                    ctx.save(); 
-                    ctx.translate(ssX, ssY); 
-                    ctx.rotate(Math.PI/4); 
-                    ctx.strokeStyle = `rgba(255, 255, 255, ${clingAlpha})`; 
-                    ctx.lineWidth = 3;
-                    ctx.shadowBlur = 15 * clingAlpha; 
-                    ctx.shadowColor = "white";
+                    if (clingAlpha > 0) {
+                        const shineLen = 160 * clingAlpha; 
+                        ctx.save(); 
+                        ctx.translate(ssX, ssY); 
+                        ctx.rotate(Math.PI/4); 
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${clingAlpha * starOpacity})`; 
+                        ctx.lineWidth = 3;
+                        ctx.shadowBlur = 15 * clingAlpha; 
+                        ctx.shadowColor = "white";
+                        
+                        ctx.beginPath(); ctx.moveTo(-shineLen, 0); ctx.lineTo(shineLen, 0); ctx.stroke();
+                        ctx.rotate(Math.PI/2); 
+                        ctx.beginPath(); ctx.moveTo(-shineLen, 0); ctx.lineTo(shineLen, 0); ctx.stroke();
+                        
+                        ctx.restore(); 
+                    }
                     
-                    ctx.beginPath(); ctx.moveTo(-shineLen, 0); ctx.lineTo(shineLen, 0); ctx.stroke();
-                    ctx.rotate(Math.PI/2); 
-                    ctx.beginPath(); ctx.moveTo(-shineLen, 0); ctx.lineTo(shineLen, 0); ctx.stroke();
+                    ctx.beginPath(); ctx.arc(ssX, ssY, 6, 0, Math.PI * 2); ctx.fillStyle = `rgba(255, 255, 255, ${starOpacity})`; ctx.shadowBlur = 30 * starOpacity; ctx.shadowColor = 'white'; ctx.fill(); ctx.shadowBlur = 0; 
                     
-                    ctx.restore(); 
+                    // Menghilang ketika hampir sampai bawah layar
+                    if(ssY >= c.height * 0.85) { 
+                        fadeOutStar = true;
+                    }
                 }
                 
-                ctx.beginPath(); ctx.arc(ssX, ssY, 6, 0, Math.PI * 2); ctx.fillStyle = 'white'; ctx.shadowBlur = 30; ctx.shadowColor = 'white'; ctx.fill(); ctx.shadowBlur = 0; 
-                
-                if(ssX < -600) { 
-                    ssActive = false; 
-                    showWishUI(); 
-                } else {
-                    requestAnimationFrame(animate); 
-                }
+                requestAnimationFrame(animate); 
             }
             animate();
         }
