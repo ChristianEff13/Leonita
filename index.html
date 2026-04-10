@@ -85,13 +85,38 @@
 
         /* --- Landing Page --- */
         #page-landing { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; width: 100%; padding: 20px; transition: opacity 1.5s ease; }
+        
+        /* Bright Colorful Sunbeams Background */
+        #colorful-bg { 
+            position: fixed; inset: 0; z-index: -2; 
+            background: radial-gradient(circle at 50% 0%, #fffee6 0%, #ffe0f0 50%, #d4f0ff 100%); 
+            opacity: 0; transition: opacity 4s ease-in-out; 
+            overflow: hidden;
+        }
+        .colorful-ray { 
+            position: absolute; top: -50%; left: 50%; width: 300%; height: 200%; 
+            background: repeating-linear-gradient(
+                95deg, 
+                transparent 0%, transparent 4%, 
+                rgba(255, 105, 180, 0.25) 6%, transparent 8%, 
+                transparent 12%, rgba(0, 191, 255, 0.25) 14%,
+                transparent 16%, transparent 20%,
+                rgba(255, 215, 0, 0.25) 22%, transparent 24%,
+                transparent 28%, rgba(112, 255, 139, 0.25) 30%
+            ); 
+            transform-origin: center top; 
+            animation: raysRotate 30s infinite linear; 
+            filter: blur(25px); 
+            transform: translateX(-50%);
+        }
+
         .sunbeams { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% -20%, #1a2a30 0%, #03080a 80%); }
         .ray { position: absolute; top: -50%; left: 50%; width: 300%; height: 200%; background: repeating-linear-gradient(95deg, transparent 0%, transparent 5%, var(--sun-ray) 7%, transparent 10%, transparent 12%, var(--sun-ray) 15%); transform-origin: center top; animation: raysRotate 25s infinite linear; filter: blur(20px); }
         @keyframes raysRotate { 0% { transform: translateX(-50%) rotate(0deg); } 100% { transform: translateX(-50%) rotate(15deg); } }
         
         #landing-particles { position: absolute; inset: 0; z-index: 1; pointer-events: none; width: 100%; height: 100%; }
 
-        .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 10vw, 6.5rem); font-style: italic; margin-bottom: 20px; color: var(--white); position: relative; z-index: 2; }
+        .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 10vw, 6.5rem); font-style: italic; margin-bottom: 20px; color: var(--white); position: relative; z-index: 2; transition: color 4s ease-in-out; }
         .countdown { display: flex; gap: clamp(10px, 3vw, 25px); margin-bottom: clamp(30px, 8vh, 60px); position: relative; z-index: 2; }
         .count-item span:first-child { font-size: clamp(2rem, 7vw, 4rem); color: var(--gold-light); display: block; font-family: 'Cormorant Garamond', serif; font-weight: 600; }
         .count-item span:last-child { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); }
@@ -235,6 +260,9 @@
     </div>
 
     <div id="page-landing">
+        <div id="colorful-bg">
+            <div class="colorful-ray"></div>
+        </div>
         <div class="sunbeams"><div class="ray"></div></div>
         <canvas id="landing-particles"></canvas>
         <section style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; position: relative; z-index: 2;">
@@ -245,7 +273,7 @@
                 <div class="count-item"><span id="mins">00</span><span>Mins</span></div>
                 <div class="count-item"><span id="secs">00</span><span>Secs</span></div>
             </div>
-            <p style="margin-bottom: 40px; color: rgba(255,255,255,0.6); max-width: 450px; line-height: 1.6; font-size: 0.9rem;">
+            <p id="greeting-text" style="margin-bottom: 40px; color: rgba(255,255,255,0.6); max-width: 450px; line-height: 1.6; font-size: 0.9rem; transition: color 4s ease-in-out;">
                 "Helloo Leyonn!, Are You Ready To Start The Journey?"
             </p>
             <button class="next-btn" onclick="showLogin()">Open The Surprise</button>
@@ -457,6 +485,27 @@
             if(container) { 
                 container.innerHTML = `<div style="font-family: 'Dancing Script', cursive; font-size: clamp(3rem, 8vw, 6rem); color: var(--gold); text-shadow: 0 0 20px rgba(197,160,89,0.5);">It's Your Day!</div>`; 
             }
+            
+            // Memunculkan background gradient yang sangat colorful dengan transisi halus
+            const colorfulBg = document.getElementById('colorful-bg');
+            if(colorfulBg) colorfulBg.style.opacity = '1';
+            
+            // Memudarkan perlahan background hitam (sunbeams) lama
+            const sunbeams = document.querySelector('.sunbeams');
+            if(sunbeams) {
+                sunbeams.style.transition = 'opacity 4s ease-in-out';
+                sunbeams.style.opacity = '0';
+            }
+
+            // Mengubah warna teks secara halus agar tetap bisa dibaca saat latar berubah cerah
+            const heroTitle = document.querySelector('.hero h1');
+            if(heroTitle) heroTitle.style.color = '#333';
+            
+            const greetingText = document.getElementById('greeting-text');
+            if(greetingText) {
+                greetingText.style.color = '#555';
+                greetingText.style.textShadow = '0 0 10px rgba(255,255,255,0.8)';
+            }
         }
 
         function showLogin() {
@@ -577,7 +626,7 @@
             wrap.style.left = (Math.random() * 80 + 10) + 'vw';
             wrap.style.bottom = '-120px';
             wrap.style.color = color;
-            wrap.innerHTML = `<div class="balloon" style="background:${color};"></div><svg class="string-svg" viewBox="0 0 40 100"><path d="M20,0 Q35,25 20,50 T20,100" stroke="rgba(0,0,0,0.15)" fill="none" stroke-width="2"/></svg>`;
+            wrap.innerHTML = `<div class="balloon" style="background: radial-gradient(circle at 35% 30%, #fff -50%, ${color} 50%, #000 150%);"></div><svg class="string-svg" viewBox="0 0 40 100"><path d="M20,0 Q35,25 20,50 T20,100" stroke="rgba(0,0,0,0.3)" fill="none" stroke-width="2"/></svg>`;
             wrap.onclick = (e) => {
                 playPopSound();
                 confetti({ origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight }, colors: [color, '#ffffff'], particleCount: 30, zIndex: 10000 });
@@ -959,6 +1008,11 @@
                             const ca = clusterAudio.cloneNode();
                             ca.volume = 0.6; 
                             ca.play().catch(e => console.log("Audio diblokir:", e));
+                            
+                            playFireworkSound();
+                            setTimeout(playFireworkSound, 150);
+                            setTimeout(playFireworkSound, 300);
+
                             window.hasPlayedCluster = true; 
                         }
                     }
@@ -1182,7 +1236,7 @@
         }
 
         countdownInterval = setInterval(() => {
-            const diff = new Date("April 13, 2026 00:00:00") - Date.now();
+            const diff = new Date("April 12, 2026 23:59:59") - Date.now();
             if(diff > 0 && !adminBypassCountdown) {
                 let ds = document.getElementById("days");
                 if (ds) ds.innerText = Math.floor(diff/86400000).toString().padStart(2,'0');
