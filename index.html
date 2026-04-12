@@ -16,8 +16,10 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: var(--bg); color: var(--white); font-family: 'Montserrat', sans-serif; transition: background-color 2.5s cubic-bezier(0.4, 0, 0.2, 1); min-height: 100vh; overflow: hidden; }
+        body { background-color: var(--bg); color: var(--white); font-family: 'Montserrat', sans-serif; transition: background-color 2.5s cubic-bezier(0.4, 0, 0.2, 1); min-height: 100vh; min-height: 100dvh; overflow: hidden; }
         body.allow-scroll { overflow-y: auto; overflow-x: hidden; }
+        
+        button, input, .balloon-wrapper, .polaroid, #moon-hitbox { touch-action: manipulation; }
 
         /* --- Lightbox --- */
         #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 30000; display: none; justify-content: center; align-items: center; cursor: zoom-out; opacity: 0; transition: opacity 0.3s; backdrop-filter: blur(5px); }
@@ -151,13 +153,13 @@
         /* --- Celebration Page --- */
         #page-celebration { display: none; opacity: 0; width: 100%; background: var(--bg-bright); color: #333; transition: opacity 2.5s ease; padding-bottom: 100px; }
         .scroll-hint { font-size: 0.9rem; letter-spacing: 6px; color: var(--gold); text-transform: uppercase; padding: 100px 0 40px; text-align: center; }
-        .heart-container { position: relative; width: 100%; max-width: 1100px; height: 90vh; min-height: 700px; margin: 0 auto; display: flex; justify-content: center; align-items: center; z-index: 20; }
+        .heart-container { position: relative; width: 100%; max-width: 1100px; height: 90vh; min-height: 500px; margin: 0 auto; display: flex; justify-content: center; align-items: center; z-index: 20; }
         .center-birthday-text { position: absolute; font-family: 'Dancing Script', cursive; color: var(--gold); text-align: center; z-index: 50; pointer-events: none; text-shadow: 2px 2px 15px rgba(255, 255, 255, 0.6); }
         .center-birthday-text .hd-title { font-size: clamp(2rem, 6vw, 4rem); font-weight: 600; }
         .center-birthday-text .name-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 700; }
-        .polaroid { position: absolute; background: white; padding: 5px 5px 18px 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); width: clamp(70px, 12vw, 90px); transition: 0.4s; z-index: 20; cursor: zoom-in; }
-        .polaroid img { width: 100%; height: clamp(60px, 10vw, 85px); object-fit: cover; }
-        .polaroid:hover { transform: scale(2.5) rotate(0deg) !important; z-index: 1000; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+        .polaroid { position: absolute; background: white; padding: 5px 5px 18px 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); width: clamp(60px, 12vw, 90px); transition: 0.4s; z-index: 20; cursor: zoom-in; transform: translate(-50%, -50%); }
+        .polaroid img { width: 100%; height: clamp(55px, 10vw, 85px); object-fit: cover; }
+        .polaroid:hover { transform: translate(-50%, -50%) scale(2.5) rotate(0deg) !important; z-index: 1000; box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
 
         .message-box { background: white; border-radius: 40px; padding: 60px 40px; max-width: 700px; margin: 80px auto 30px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.03); border: 1px solid #f2f2f2; position: relative; z-index: 30; }
         .personal-note { font-family: 'Dancing Script', cursive; line-height: 1.8; font-size: 1.5rem; color: #444; text-align: left; margin-top: 50px; min-height: 200px; }
@@ -224,11 +226,15 @@
         .string-svg { width: 30px; height: 80px; margin-top: -10px; position: relative; z-index: 1; opacity: 0.6; animation: stringSway 2s ease-in-out infinite alternate; transform-origin: top center; }
         @keyframes stringSway { 0% { transform: rotate(-6deg); } 100% { transform: rotate(6deg); } }
 
-        /* --- Penyesuaian Mobile --- */
+        /* --- Penyesuaian Mobile Khusus --- */
         @media (max-width: 768px) {
             .message-box { padding: 30px 20px; margin-top: 40px; width: 90%; }
-            #back-to-wishes { bottom: 12vh; padding: 20px 40px; font-size: 1.2rem; }
-            .moon, #moon-hitbox { right: 5%; top: 5%; }
+            #back-to-wishes { bottom: 8vh; padding: 15px 30px; font-size: 1rem; }
+            .moon, #moon-hitbox { right: 5%; top: 5%; width: 75px; height: 75px; }
+            .wish-item { margin-bottom: 80px; }
+            .nav-controls { bottom: 15px; right: 15px; gap: 10px; }
+            .nav-btn { width: 35px; height: 35px; }
+            .nav-btn svg { width: 18px; height: 18px; }
         }
     </style>
 </head>
@@ -695,13 +701,15 @@
 
         function initHeart() {
             const container = document.getElementById('heart-gallery');
+            const scale = window.innerWidth < 768 ? window.innerWidth / 800 : 1;
             photos.forEach((src, i) => {
                 const t = (i / photos.length) * (2 * Math.PI);
-                const x = 16 * Math.pow(Math.sin(t), 3) * 18;
-                const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * 18;
+                const x = 16 * Math.pow(Math.sin(t), 3) * 18 * scale;
+                const y = -(13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * 18 * scale;
                 const card = document.createElement('div');
                 card.className = 'polaroid';
-                card.style.left = `calc(50% + ${x}px - 45px)`; card.style.top = `calc(50% + ${y}px - 45px)`;
+                card.style.left = `calc(50% + ${x}px)`;
+                card.style.top = `calc(50% + ${y}px)`;
                 card.innerHTML = `<img src="${src}">`;
                 container.appendChild(card);
             });
@@ -924,15 +932,21 @@
 
         function launchFireworksSimultaneously(text) {
             fwCanvas.width = window.innerWidth; fwCanvas.height = window.innerHeight;
-            const fontSize = Math.min(fwCanvas.width / 14, 70); 
+            let fontSize = Math.min(fwCanvas.width / 16, 70); 
             fwCtx.font = `bold italic ${fontSize}px 'Cormorant Garamond'`;
+            
+            let totalWidth = fwCtx.measureText(text).width;
+            if (totalWidth > fwCanvas.width * 0.9) {
+                fontSize = fontSize * ((fwCanvas.width * 0.9) / totalWidth);
+                fwCtx.font = `bold italic ${fontSize}px 'Cormorant Garamond'`;
+                totalWidth = fwCtx.measureText(text).width;
+            }
             
             const offCanvas = document.createElement('canvas');
             offCanvas.width = fwCanvas.width; offCanvas.height = fwCanvas.height;
             const offCtx = offCanvas.getContext('2d', {willReadFrequently: true});
             offCtx.font = fwCtx.font; offCtx.fillStyle = '#ffffff'; offCtx.textBaseline = 'alphabetic';
 
-            const totalWidth = fwCtx.measureText(text).width;
             let currentX = (fwCanvas.width - totalWidth) / 2;
             const centerY = fwCanvas.height * 0.45;
             textFireworks = [];
