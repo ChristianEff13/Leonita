@@ -241,21 +241,19 @@
 <body>
 
     <audio id="bg-music" loop preload="auto">
-        <source src="https://github.com/ChristianEff13/Leonita/raw/refs/heads/main/LANY%20-%20%27Cause%20You%20Have%20To%20(Official%20Lyric%20Video).mp3" type="audio/mpeg">
+        <source src="https://github.com/ChristianEff13/Leonita/raw/refs/heads/main/LANY%20-%20Last%20Forever%20(Official%20Lyric%20Video).mp3" type="audio/mpeg">
     </audio>
 
     <div id="lightbox" onclick="closeLightbox()">
         <img id="lightbox-img" src="" alt="Memory">
     </div>
 
-    <!-- Small Console Link (Top Left) -->
     <a href="https://christianeff13.github.io/CrossDataGame/" target="_blank" class="console-link" id="my-console-link" title="Cross Data Game">
         <svg viewBox="0 0 24 24">
             <path d="M20,12H18V10H16V12H14V14H16V16H18V14H20V12M9,10H7V12H5V14H7V16H9V14H11V12H9V10M22,6H2V18H22V6M22,4A2,2 0 0,1 24,6V18A2,2 0 0,1 22,20H2A2,2 0 0,1 0,18V6A2,2 0 0,1 2,4H22Z" />
         </svg>
     </a>
 
-    <!-- Navigation Controls -->
     <div class="nav-controls" id="nav-container">
         <button class="nav-btn" title="Back" onclick="movePage(-1)">
             <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
@@ -304,7 +302,6 @@
         </div>
     </div>
 
-    <!-- Loading Screen (Preloader) -->
     <div id="loading-screen">
         <div class="spinner"></div>
         <p style="color: var(--gold); font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-style: italic; margin-top: 20px; letter-spacing: 2px;">Thinking hard... almost done... (just kidding)</p>
@@ -335,7 +332,6 @@
     </div>
 
     <div id="page-surprise">
-        <!-- TONGKAT AJAIB: Lapisan transparan (hitbox) khusus bulan agar mudah dipencet -->
         <div id="moon-hitbox" onclick="handleMoonClick()"></div>
         
         <div class="night-sky">
@@ -1257,7 +1253,7 @@
         }
 
         countdownInterval = setInterval(() => {
-            const diff = new Date("April 12, 2026 23:59:59") - Date.now();
+            const diff = new Date("April 13, 2026 00:00:00") - Date.now();
             if(diff > 0 && !adminBypassCountdown) {
                 let ds = document.getElementById("days");
                 if (ds) ds.innerText = Math.floor(diff/86400000).toString().padStart(2,'0');
